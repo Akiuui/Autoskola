@@ -72,7 +72,8 @@ CREATE TABLE [Cas] (
   [Datum] date,
   [Pocetak] timestamp,
   [Kraj] timestamp,
-  [Trajanje] time
+  [Trajanje] time,
+  [Status] string
 )
 GO
 
@@ -135,6 +136,26 @@ CREATE TABLE [Vozilo] (
 )
 GO
 
+CREATE TABLE [Gorivo] (
+  [Id] string PRIMARY KEY,
+  [Vozilo_id] string,
+  [Zaposleni_id] string,
+  [Datum] timestamp,
+  [Kolicina] decimal,
+  [Cena_po_litri] decimal,
+  [Kilometraza] integer
+)
+GO
+
+CREATE TABLE [Servis] (
+  [Id] string PRIMARY KEY,
+  [Vozilo_id] string,
+  [Datum] date,
+  [Opis] string,
+  [Trosak] decimal
+)
+GO
+
 CREATE TABLE [Usluga] (
   [Id] string PRIMARY KEY,
   [Naziv] string,
@@ -165,6 +186,16 @@ GO
 CREATE TABLE [Nacin_placanja] (
   [Id] string PRIMARY KEY,
   [Naziv] string
+)
+GO
+
+CREATE TABLE [Rashod] (
+  [Id] string PRIMARY KEY,
+  [Naziv] string,
+  [Iznos] decimal,
+  [Datum] date,
+  [Kategorija] string,
+  [Vozilo_id] string
 )
 GO
 
@@ -232,6 +263,18 @@ ALTER TABLE [Zaposleni_status] ADD FOREIGN KEY ([Zaposleni_id]) REFERENCES [Zapo
 GO
 
 ALTER TABLE [Vozilo] ADD FOREIGN KEY ([Kategorija_id]) REFERENCES [Kategorija_vozacke] ([Id])
+GO
+
+ALTER TABLE [Gorivo] ADD FOREIGN KEY ([Vozilo_id]) REFERENCES [Vozilo] ([Id])
+GO
+
+ALTER TABLE [Gorivo] ADD FOREIGN KEY ([Zaposleni_id]) REFERENCES [Zaposleni] ([Id_osobe])
+GO
+
+ALTER TABLE [Servis] ADD FOREIGN KEY ([Vozilo_id]) REFERENCES [Vozilo] ([Id])
+GO
+
+ALTER TABLE [Rashod] ADD FOREIGN KEY ([Vozilo_id]) REFERENCES [Vozilo] ([Id])
 GO
 
 ALTER TABLE [Cenovnik] ADD FOREIGN KEY ([Usluga_id]) REFERENCES [Usluga] ([Id])
