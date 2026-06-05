@@ -1,19 +1,16 @@
 Domeni:
 
-Ljudi: Kandidati, Instruktori, Admini
- - Osoba, Kandidat, Zaposleni, Tip_zaposlenih, Zaposleni_status
+Ljudi: kandidati, zaposleni, funkcije i izostanci
+ - Kandidat, Zaposleni, Funkcije_Zaposlenih, Zaposleni_Funkcija, Zaposleni_Izostanak
 
-Obuka: Kategorije, Programi, Fond časova
- - Obuka, Grupa, Grupa_kandidat, Kategorija_vozacke
+Obuka: kategorije, tipovi obuke, aktivne obuke i grupe
+ - Obuka, Tip_obuke, Kategorija_vozacke, Grupa, Kandidat_grupa
 
-Časovi: Raspored, Evidencija izvedenih časova
- - Cas, Prakticni_cas, Teorijski_cas
+Casovi i vozila: raspored, evidencija casova i vozila
+ - Cas, Vozilo
 
-Resursi: Vozila, Održavanje, Termini
- - Vozilo, Gorivo, Servis
+Polaganje: ispiti, rezultati kandidata i nadzornici
+ - Polaganje, Polaganje_kandidat, Nadzornici_polaganja
 
-Polaganje: Prijava ispita, Rezultati, Komisije
- - Polaganje, Tip_Polaganja, Nadzornici_polaganja
-
-Finansije: Uplate kandidata, Troškovi, Plate
- - Usluga, Uplata, Cenovnik, Nacin_placanja, Rashod
+Finansije: cenovnik i uplate za obuke
+ - Cenovnik, Uplata
