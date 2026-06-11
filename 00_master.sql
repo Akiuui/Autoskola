@@ -1,15 +1,15 @@
 -- Pokretati ovim redoslijedom!
 -- 1. Ljudi
-:r 01_ljudi.sql
+:r D:\Projekti\Autoskola\01_ljudi.sql
 
 -- 2. Obuka
-:r 02_obuka.sql
+:r D:\Projekti\Autoskola\02_obuka.sql
 
 -- 3. Casovi i Vozila
-:r 03_casovi.sql
+:r D:\Projekti\Autoskola\03_casovi.sql
 
 -- 4. Polaganje
-:r 04_polaganje.sql
+:r D:\Projekti\Autoskola\04_polaganje.sql
 
 -- 5. Finansije
-:r 05_finansije.sql
+:r D:\Projekti\Autoskola\05_finansije.sql
