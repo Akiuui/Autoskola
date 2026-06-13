@@ -1,15 +1,17 @@
 CREATE TABLE [Vozilo] (
-    [Id] UNIQUEIDENTIFIER NOT NULL CONSTRAINT [DF_Vozilo_Id] DEFAULT (newid()),
+    [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY
+        CONSTRAINT [DF_Vozilo_Id] DEFAULT (newid()),
     [Registracija] NVARCHAR(20) NOT NULL,
     [Marka] NVARCHAR(50) NOT NULL,
     [Model] NVARCHAR(50) NOT NULL,
     [Godiste] INT NOT NULL,
-    [Kategorija_id] UNIQUEIDENTIFIER NOT NULL,
-    [Kilometraza] INT NOT NULL CONSTRAINT [DF_Vozilo_Kilometraza] DEFAULT (0),
+    [Kategorija_id] UNIQUEIDENTIFIER NOT NULL REFERENCES [Kategorija_vozacke] ([Id]),
+    [Kilometraza] INT NOT NULL
+        CONSTRAINT [DF_Vozilo_Kilometraza] DEFAULT (0),
     [Datum_registracije] DATE NOT NULL,
-    [Kreiran_datum] DATETIME2 NOT NULL CONSTRAINT [DF_Vozilo_Kreiran_datum] DEFAULT (getdate()),
+    [Kreiran_datum] DATETIME2 NOT NULL
+        CONSTRAINT [DF_Vozilo_Kreiran_datum] DEFAULT (getdate()),
     [Izmenjen_datum] DATETIME2,
-    CONSTRAINT [PK_Vozilo] PRIMARY KEY ([Id]),
     -- Registracija vozila ne sme da se ponavlja.
     CONSTRAINT [UQ_Vozilo_Registracija] UNIQUE ([Registracija]),
     -- Godiste vozila mora biti u realnom opsegu.
@@ -20,20 +22,22 @@ CREATE TABLE [Vozilo] (
 GO
 
 CREATE TABLE [Cas] (
-    [Id] UNIQUEIDENTIFIER NOT NULL CONSTRAINT [DF_Cas_Id] DEFAULT (newid()),
-    [Instruktor_id] UNIQUEIDENTIFIER NOT NULL,
-    [Tip_id] UNIQUEIDENTIFIER NOT NULL,
+    [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY
+        CONSTRAINT [DF_Cas_Id] DEFAULT (newid()),
+    [Instruktor_id] UNIQUEIDENTIFIER NOT NULL REFERENCES [Zaposleni] ([Id]),
+    [Tip_id] UNIQUEIDENTIFIER NOT NULL REFERENCES [Tip_obuke] ([Id]),
     [Lokacija] NVARCHAR(200),
     [Datum] DATE NOT NULL,
     [Pocetak] DATETIME2 NOT NULL,
     [Kraj] DATETIME2 NOT NULL,
-    [Status] NVARCHAR(20) NOT NULL CONSTRAINT [DF_Cas_Status] DEFAULT (N'Zakazan'),
-    [Obuka_id] UNIQUEIDENTIFIER,
-    [Vozilo_id] UNIQUEIDENTIFIER,
-    [Grupa_id] UNIQUEIDENTIFIER,
-    [Kreiran_datum] DATETIME2 NOT NULL CONSTRAINT [DF_Cas_Kreiran_datum] DEFAULT (getdate()),
+    [Status] NVARCHAR(20) NOT NULL
+        CONSTRAINT [DF_Cas_Status] DEFAULT (N'Zakazan'),
+    [Obuka_id] UNIQUEIDENTIFIER REFERENCES [Obuka] ([Id]),
+    [Vozilo_id] UNIQUEIDENTIFIER REFERENCES [Vozilo] ([Id]),
+    [Grupa_id] UNIQUEIDENTIFIER REFERENCES [Grupa] ([Id]),
+    [Kreiran_datum] DATETIME2 NOT NULL
+        CONSTRAINT [DF_Cas_Kreiran_datum] DEFAULT (getdate()),
     [Izmenjen_datum] DATETIME2,
-    CONSTRAINT [PK_Cas] PRIMARY KEY ([Id]),
     -- Status casa moze biti samo jedna od dozvoljenih vrednosti.
     CONSTRAINT [CK_Cas_Status] CHECK ([Status] IN (N'Zakazan', N'Odrzan', N'Otkazan')),
     -- Vreme zavrsetka casa mora biti posle vremena pocetka.
@@ -87,40 +91,4 @@ EXEC sp_addextendedproperty
 @level0type = N'Schema', @level0name = 'dbo',
 @level1type = N'Table',  @level1name = 'Cas',
 @level2type = N'Column', @level2name = 'Grupa_id';
-GO
-
-ALTER TABLE [Vozilo]
-ADD CONSTRAINT [FK_Vozilo_Kategorija_vozacke]
--- Vozilo mora pripadati postojecoj kategoriji vozacke dozvole.
-FOREIGN KEY ([Kategorija_id]) REFERENCES [Kategorija_vozacke] ([Id]);
-GO
-
-ALTER TABLE [Cas]
-ADD CONSTRAINT [FK_Cas_Zaposleni]
--- Cas mora imati postojeceg instruktora.
-FOREIGN KEY ([Instruktor_id]) REFERENCES [Zaposleni] ([Id]);
-GO
-
-ALTER TABLE [Cas]
-ADD CONSTRAINT [FK_Cas_Tip_obuke]
--- Cas mora imati postojeci tip obuke.
-FOREIGN KEY ([Tip_id]) REFERENCES [Tip_obuke] ([Id]);
-GO
-
-ALTER TABLE [Cas]
-ADD CONSTRAINT [FK_Cas_Obuka]
--- Prakticni cas, kada ima obuku, mora pokazivati na postojecu obuku.
-FOREIGN KEY ([Obuka_id]) REFERENCES [Obuka] ([Id]);
-GO
-
-ALTER TABLE [Cas]
-ADD CONSTRAINT [FK_Cas_Vozilo]
--- Prakticni cas, kada ima vozilo, mora pokazivati na postojece vozilo.
-FOREIGN KEY ([Vozilo_id]) REFERENCES [Vozilo] ([Id]);
-GO
-
-ALTER TABLE [Cas]
-ADD CONSTRAINT [FK_Cas_Grupa]
--- Teorijski/grupni cas, kada ima grupu, mora pokazivati na postojecu grupu.
-FOREIGN KEY ([Grupa_id]) REFERENCES [Grupa] ([Id]);
 GO

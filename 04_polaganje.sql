@@ -1,19 +1,20 @@
 CREATE TABLE [Polaganje] (
-    [Id] UNIQUEIDENTIFIER NOT NULL CONSTRAINT [DF_Polaganje_Id] DEFAULT (newid()),
-    [Tip_id] UNIQUEIDENTIFIER NOT NULL,
+    [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY
+        CONSTRAINT [DF_Polaganje_Id] DEFAULT (newid()),
+    [Tip_id] UNIQUEIDENTIFIER NOT NULL REFERENCES [Tip_obuke] ([Id]),
     [Pocetak] DATETIME2 NOT NULL,
     [Kraj] DATETIME2 NOT NULL,
-    [Kreiran_datum] DATETIME2 NOT NULL CONSTRAINT [DF_Polaganje_Kreiran_datum] DEFAULT (getdate()),
+    [Kreiran_datum] DATETIME2 NOT NULL
+        CONSTRAINT [DF_Polaganje_Kreiran_datum] DEFAULT (getdate()),
     [Izmenjen_datum] DATETIME2,
-    CONSTRAINT [PK_Polaganje] PRIMARY KEY ([Id]),
     -- Vreme zavrsetka polaganja mora biti posle vremena pocetka.
     CONSTRAINT [CK_Polaganje_Vreme] CHECK ([Kraj] > [Pocetak])
 );
 GO
 
 CREATE TABLE [Polaganje_kandidat] (
-    [Polaganje_id] UNIQUEIDENTIFIER NOT NULL,
-    [Obuka_id] UNIQUEIDENTIFIER NOT NULL,
+    [Polaganje_id] UNIQUEIDENTIFIER NOT NULL REFERENCES [Polaganje] ([Id]),
+    [Obuka_id] UNIQUEIDENTIFIER NOT NULL REFERENCES [Obuka] ([Id]),
     [Uspesno] BIT,
     [Broj_Poenta] TINYINT,
     -- Ista obuka ne moze biti prijavljena na isto polaganje vise puta.
@@ -30,8 +31,8 @@ CREATE TABLE [Polaganje_kandidat] (
 GO
 
 CREATE TABLE [Nadzornici_polaganja] (
-    [Polaganje_id] UNIQUEIDENTIFIER NOT NULL,
-    [Nadzornik_id] UNIQUEIDENTIFIER NOT NULL,
+    [Polaganje_id] UNIQUEIDENTIFIER NOT NULL REFERENCES [Polaganje] ([Id]),
+    [Nadzornik_id] UNIQUEIDENTIFIER NOT NULL REFERENCES [Zaposleni] ([Id]),
     -- Isti nadzornik ne moze biti dodat na isto polaganje vise puta.
     CONSTRAINT [PK_Nadzornici_polaganja] PRIMARY KEY ([Polaganje_id], [Nadzornik_id])
 );
@@ -51,34 +52,4 @@ EXEC sp_addextendedproperty
 @level0type = N'Schema', @level0name = 'dbo',
 @level1type = N'Table',  @level1name = 'Polaganje_kandidat',
 @level2type = N'Column', @level2name = 'Uspesno';
-GO
-
-ALTER TABLE [Polaganje]
-ADD CONSTRAINT [FK_Polaganje_Tip_obuke]
--- Polaganje mora imati postojeci tip obuke/polaganja.
-FOREIGN KEY ([Tip_id]) REFERENCES [Tip_obuke] ([Id]);
-GO
-
-ALTER TABLE [Polaganje_kandidat]
-ADD CONSTRAINT [FK_Polaganje_kandidat_Polaganje]
--- Rezultat kandidata mora biti vezan za postojece polaganje.
-FOREIGN KEY ([Polaganje_id]) REFERENCES [Polaganje] ([Id]);
-GO
-
-ALTER TABLE [Polaganje_kandidat]
-ADD CONSTRAINT [FK_Polaganje_kandidat_Obuka]
--- Rezultat kandidata mora biti vezan za postojecu obuku.
-FOREIGN KEY ([Obuka_id]) REFERENCES [Obuka] ([Id]);
-GO
-
-ALTER TABLE [Nadzornici_polaganja]
-ADD CONSTRAINT [FK_Nadzornici_polaganja_Polaganje]
--- Nadzornik mora biti vezan za postojece polaganje.
-FOREIGN KEY ([Polaganje_id]) REFERENCES [Polaganje] ([Id]);
-GO
-
-ALTER TABLE [Nadzornici_polaganja]
-ADD CONSTRAINT [FK_Nadzornici_polaganja_Zaposleni]
--- Nadzornik polaganja mora biti postojeci zaposleni.
-FOREIGN KEY ([Nadzornik_id]) REFERENCES [Zaposleni] ([Id]);
 GO
