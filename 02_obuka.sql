@@ -1,44 +1,68 @@
-CREATE TABLE [Obuka] (
-    [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT (newid()),
-    [Kategorija_id] UNIQUEIDENTIFIER NOT NULL,
-    [Glavni_Instruktor_id] UNIQUEIDENTIFIER,
-    [Kandidat_id] UNIQUEIDENTIFIER NOT NULL,
-    [Tip_Obuke] UNIQUEIDENTIFIER NOT NULL,
-    [Datum_pocetka] DATE NOT NULL,
-    [Datum_zavrsetka] DATE,
-    [Status] NVARCHAR(20) NOT NULL DEFAULT 'Aktivan',
-    [Kreiran_datum] DATETIME2 NOT NULL DEFAULT (getdate()),
-    [Izmenjen_datum] DATETIME2
-);
-GO
-
 CREATE TABLE [Tip_obuke] (
-    [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT (newid()),
-    [Tip] NVARCHAR(30),
-    [Opis] NVARCHAR(100)
+    [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY
+        CONSTRAINT [DF_Tip_obuke_Id] DEFAULT (newid()),
+    [Tip] NVARCHAR(30) NOT NULL,
+    [Opis] NVARCHAR(100),
+    -- Naziv tipa obuke ne sme da se ponavlja.
+    CONSTRAINT [UQ_Tip_obuke_Tip] UNIQUE ([Tip]),
+    -- Tip obuke moze biti samo jedna od dozvoljenih vrednosti.
+    CONSTRAINT [CK_Tip_obuke_Tip] CHECK ([Tip] IN (N'Teorijska', N'Prakticna', N'Prva Pomoc'))
 );
 GO
 
 CREATE TABLE [Kategorija_vozacke] (
-    [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT (newid()),
+    [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY
+        CONSTRAINT [DF_Kategorija_vozacke_Id] DEFAULT (newid()),
     [Oznaka] CHAR(2) NOT NULL,
-    [Opis] NVARCHAR(50)
+    [Opis] NVARCHAR(50),
+    -- Oznaka kategorije ne sme da se ponavlja.
+    CONSTRAINT [UQ_Kategorija_vozacke_Oznaka] UNIQUE ([Oznaka])
 );
 GO
 
 CREATE TABLE [Grupa] (
-    [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT (newid()),
-    [Datum_kreiranja] DATE NOT NULL DEFAULT (getdate()),
-    [Datum_zavrsetka] DATE
+    [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY
+        CONSTRAINT [DF_Grupa_Id] DEFAULT (newid()),
+    [Datum_kreiranja] DATE NOT NULL
+        CONSTRAINT [DF_Grupa_Datum_kreiranja] DEFAULT (getdate()),
+    [Datum_zavrsetka] DATE,
+    -- Datum zavrsetka grupe, ako postoji, ne sme biti pre datuma kreiranja.
+    CONSTRAINT [CK_Grupa_Datum] CHECK ([Datum_zavrsetka] IS NULL OR [Datum_zavrsetka] >= [Datum_kreiranja])
+);
+GO
+
+CREATE TABLE [Obuka] (
+    [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY
+        CONSTRAINT [DF_Obuka_Id] DEFAULT (newid()),
+    [Kategorija_id] UNIQUEIDENTIFIER NOT NULL REFERENCES [Kategorija_vozacke] ([Id]),
+    [Glavni_Instruktor_id] UNIQUEIDENTIFIER REFERENCES [Zaposleni] ([Id]),
+    [Kandidat_id] UNIQUEIDENTIFIER NOT NULL REFERENCES [Kandidat] ([Id]),
+    [Tip_Obuke] UNIQUEIDENTIFIER NOT NULL REFERENCES [Tip_obuke] ([Id]),
+    [Datum_pocetka] DATE NOT NULL,
+    [Datum_zavrsetka] DATE,
+    [Status] NVARCHAR(20) NOT NULL
+        CONSTRAINT [DF_Obuka_Status] DEFAULT (N'Aktivan'),
+    [Kreiran_datum] DATETIME2 NOT NULL
+        CONSTRAINT [DF_Obuka_Kreiran_datum] DEFAULT (getdate()),
+    [Izmenjen_datum] DATETIME2,
+    -- Status obuke moze biti samo jedna od dozvoljenih vrednosti.
+    CONSTRAINT [CK_Obuka_Status] CHECK ([Status] IN (N'Aktivan', N'Zavrsen', N'Prekinut')),
+    -- Datum zavrsetka obuke, ako postoji, ne sme biti pre datuma pocetka.
+    CONSTRAINT [CK_Obuka_Datum] CHECK ([Datum_zavrsetka] IS NULL OR [Datum_zavrsetka] >= [Datum_pocetka])
 );
 GO
 
 CREATE TABLE [Kandidat_grupa] (
-    [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT (newid()),
-    [Grupa_id] UNIQUEIDENTIFIER NOT NULL,
-    [Obuka_id] UNIQUEIDENTIFIER NOT NULL,
+    [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY
+        CONSTRAINT [DF_Kandidat_grupa_Id] DEFAULT (newid()),
+    [Grupa_id] UNIQUEIDENTIFIER NOT NULL REFERENCES [Grupa] ([Id]),
+    [Obuka_id] UNIQUEIDENTIFIER NOT NULL REFERENCES [Obuka] ([Id]),
     [Datum_od] DATE NOT NULL,
-    [Datum_do] DATE
+    [Datum_do] DATE,
+    -- Ista obuka ne moze biti dodata u istu grupu vise puta.
+    CONSTRAINT [UQ_Kandidat_grupa_Obuka_Grupa] UNIQUE ([Obuka_id], [Grupa_id]),
+    -- Datum izlaska iz grupe, ako postoji, ne sme biti pre datuma ulaska.
+    CONSTRAINT [CK_Kandidat_grupa_Datum] CHECK ([Datum_do] IS NULL OR [Datum_do] >= [Datum_od])
 );
 GO
 
@@ -56,22 +80,4 @@ EXEC sp_addextendedproperty
 @level0type = N'Schema', @level0name = 'dbo',
 @level1type = N'Table',  @level1name = 'Tip_obuke',
 @level2type = N'Column', @level2name = 'Tip';
-GO
-
-ALTER TABLE [Obuka] ADD FOREIGN KEY ([Kandidat_id]) REFERENCES [Kandidat] ([Id]);
-GO
-
-ALTER TABLE [Obuka] ADD FOREIGN KEY ([Kategorija_id]) REFERENCES [Kategorija_vozacke] ([Id]);
-GO
-
-ALTER TABLE [Obuka] ADD FOREIGN KEY ([Glavni_Instruktor_id]) REFERENCES [Zaposleni] ([Id]);
-GO
-
-ALTER TABLE [Obuka] ADD FOREIGN KEY ([Tip_Obuke]) REFERENCES [Tip_obuke] ([Id]);
-GO
-
-ALTER TABLE [Kandidat_grupa] ADD FOREIGN KEY ([Grupa_id]) REFERENCES [Grupa] ([Id]);
-GO
-
-ALTER TABLE [Kandidat_grupa] ADD FOREIGN KEY ([Obuka_id]) REFERENCES [Obuka] ([Id]);
 GO

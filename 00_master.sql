@@ -1,4 +1,4 @@
--- Pokretati ovim redoslijedom!
+-- Pokretati ovim redosledom!
 -- 1. Ljudi
 :r D:\Projekti\Autoskola\01_ljudi.sql
 
