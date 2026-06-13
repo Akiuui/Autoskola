@@ -266,3 +266,420 @@ WHERE NOT EXISTS (
       AND u.[Datum] = v.[Datum]
       AND u.[Nacin_placanja] = v.[Nacin_placanja]
 );
+
+;WITH Brojevi AS (
+    SELECT TOP (100)
+        ROW_NUMBER() OVER (ORDER BY object_id) AS n
+    FROM sys.all_objects
+)
+INSERT INTO Kandidat (
+    Istek_lekarskog, Ime, Ime_roditelja, Prezime, JMBG,
+    Istek_licne_karte, Telefon, Email, Datum_rodjenja
+)
+SELECT
+    DATEADD(day, n % 365, CONVERT(date, '2027-01-01')),
+    N'Kandidat' + CAST(n AS NVARCHAR(10)),
+    N'Roditelj' + CAST(n AS NVARCHAR(10)),
+    N'Test' + CAST(n AS NVARCHAR(10)),
+    RIGHT('0000000000000' + CAST(1000000000000 + n AS VARCHAR(13)), 13),
+    DATEADD(day, n % 900, CONVERT(date, '2030-01-01')),
+    '060' + RIGHT('0000000' + CAST(7000000 + n AS VARCHAR(7)), 7),
+    'kandidat' + CAST(n AS VARCHAR(10)) + '@autoskolatest.rs',
+    DATEADD(day, n % 3650, CONVERT(date, '1995-01-01'))
+FROM Brojevi b
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Kandidat k
+    WHERE k.JMBG = RIGHT('0000000000000' + CAST(1000000000000 + b.n AS VARCHAR(13)), 13)
+);
+
+;WITH Brojevi AS (
+    SELECT TOP (30)
+        ROW_NUMBER() OVER (ORDER BY object_id) AS n
+    FROM sys.all_objects
+)
+INSERT INTO Zaposleni (
+    Kvalifikacija, Aktivni_ugovor, Ime, Ime_roditelja, Prezime,
+    JMBG, Istek_licne_karte, Telefon, Email, Datum_rodjenja
+)
+SELECT
+    CASE
+        WHEN n % 6 = 0 THEN N'Administrativni radnik'
+        WHEN n % 5 = 0 THEN N'Ispitivac teorije'
+        ELSE N'Instruktor B kategorije'
+    END,
+    CASE WHEN n % 10 = 0 THEN 0 ELSE 1 END,
+    N'Zaposleni' + CAST(n AS NVARCHAR(10)),
+    N'Roditelj' + CAST(n AS NVARCHAR(10)),
+    N'Test' + CAST(n AS NVARCHAR(10)),
+    RIGHT('0000000000000' + CAST(2000000000000 + n AS VARCHAR(13)), 13),
+    DATEADD(day, n % 900, CONVERT(date, '2030-01-01')),
+    '061' + RIGHT('0000000' + CAST(8000000 + n AS VARCHAR(7)), 7),
+    'zaposleni' + CAST(n AS VARCHAR(10)) + '@autoskolatest.rs',
+    DATEADD(day, n % 6000, CONVERT(date, '1980-01-01'))
+FROM Brojevi b
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Zaposleni z
+    WHERE z.JMBG = RIGHT('0000000000000' + CAST(2000000000000 + b.n AS VARCHAR(13)), 13)
+);
+
+INSERT INTO Zaposleni_Funkcija (Id_zaposlenog, Id_funkcije)
+SELECT z.Id, f.Id
+FROM Zaposleni z
+JOIN Funkcije_Zaposlenih f
+    ON f.Ime_funkcije =
+        CASE
+            WHEN TRY_CONVERT(INT, RIGHT(z.JMBG, 2)) % 6 = 0 THEN N'Administrator'
+            WHEN TRY_CONVERT(INT, RIGHT(z.JMBG, 2)) % 5 = 0 THEN N'Nadzornik polaganja'
+            ELSE N'Instruktor'
+        END
+WHERE z.JMBG BETWEEN '2000000000001' AND '2000000000030'
+  AND NOT EXISTS (
+      SELECT 1
+      FROM Zaposleni_Funkcija zf
+      WHERE zf.Id_zaposlenog = z.Id
+        AND zf.Id_funkcije = f.Id
+  );
+
+;WITH Brojevi AS (
+    SELECT TOP (40)
+        ROW_NUMBER() OVER (ORDER BY object_id) AS n
+    FROM sys.all_objects
+)
+INSERT INTO Grupa (Datum_kreiranja, Datum_zavrsetka)
+SELECT
+    DATEADD(day, n * 7, CONVERT(date, '2026-06-01')),
+    CASE WHEN n % 4 = 0 THEN DATEADD(day, n * 7 + 45, CONVERT(date, '2026-06-01')) ELSE NULL END
+FROM Brojevi b
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Grupa g
+    WHERE g.Datum_kreiranja = DATEADD(day, b.n * 7, CONVERT(date, '2026-06-01'))
+);
+
+;WITH Brojevi AS (
+    SELECT TOP (40)
+        ROW_NUMBER() OVER (ORDER BY object_id) AS n
+    FROM sys.all_objects
+),
+Kategorije AS (
+    SELECT
+        Id,
+        Oznaka,
+        ROW_NUMBER() OVER (ORDER BY Oznaka) AS rn,
+        COUNT(*) OVER () AS ukupno
+    FROM Kategorija_vozacke
+)
+INSERT INTO Vozilo (
+    Registracija, Marka, Model, Godiste, Kategorija_id,
+    Kilometraza, Datum_registracije
+)
+SELECT
+    'TS-' + RIGHT('0000' + CAST(b.n AS VARCHAR(4)), 4),
+    CASE b.n % 4
+        WHEN 0 THEN N'Toyota'
+        WHEN 1 THEN N'Skoda'
+        WHEN 2 THEN N'Volkswagen'
+        ELSE N'Fiat'
+    END,
+    CASE b.n % 4
+        WHEN 0 THEN N'Corolla'
+        WHEN 1 THEN N'Fabia'
+        WHEN 2 THEN N'Polo'
+        ELSE N'Tipo'
+    END,
+    2015 + (b.n % 10),
+    k.Id,
+    10000 + (b.n * 1250),
+    DATEADD(day, b.n % 365, CONVERT(date, '2026-01-01'))
+FROM Brojevi b
+JOIN Kategorije k ON k.rn = ((b.n - 1) % k.ukupno) + 1
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Vozilo v
+    WHERE v.Registracija = 'TS-' + RIGHT('0000' + CAST(b.n AS VARCHAR(4)), 4)
+);
+
+;WITH Kandidati AS (
+    SELECT
+        Id,
+        JMBG,
+        ROW_NUMBER() OVER (ORDER BY JMBG) AS rn
+    FROM Kandidat
+    WHERE JMBG BETWEEN '1000000000001' AND '1000000000100'
+),
+RedniBrojevi AS (
+    SELECT 1 AS rb
+    UNION ALL
+    SELECT 2
+),
+Kategorije AS (
+    SELECT
+        Id,
+        Oznaka,
+        ROW_NUMBER() OVER (ORDER BY Oznaka) AS rn,
+        COUNT(*) OVER () AS ukupno
+    FROM Kategorija_vozacke
+),
+Instruktori AS (
+    SELECT
+        z.Id,
+        ROW_NUMBER() OVER (ORDER BY z.JMBG) AS rn,
+        COUNT(*) OVER () AS ukupno
+    FROM Zaposleni z
+    JOIN Zaposleni_Funkcija zf ON zf.Id_zaposlenog = z.Id
+    JOIN Funkcije_Zaposlenih f ON f.Id = zf.Id_funkcije
+    WHERE f.Ime_funkcije = N'Instruktor'
+),
+Tipovi AS (
+    SELECT Id, Tip
+    FROM Tip_obuke
+    WHERE Tip IN (N'Prakticna', N'Teorijska')
+),
+DodatneObuke AS (
+    SELECT
+        k.Id AS Kandidat_id,
+        kv.Id AS Kategorija_id,
+        i.Id AS Instruktor_id,
+        t.Id AS Tip_Obuke,
+        DATEADD(day, k.rn + (rb.rb * 3), CONVERT(date, '2026-06-01')) AS Datum_pocetka,
+        CASE WHEN (k.rn + rb.rb) % 6 = 0 THEN DATEADD(day, k.rn + (rb.rb * 3) + 40, CONVERT(date, '2026-06-01')) ELSE NULL END AS Datum_zavrsetka,
+        CASE
+            WHEN (k.rn + rb.rb) % 6 = 0 THEN N'Zavrsen'
+            WHEN (k.rn + rb.rb) % 11 = 0 THEN N'Prekinut'
+            ELSE N'Aktivan'
+        END AS Status
+    FROM Kandidati k
+    CROSS JOIN RedniBrojevi rb
+    JOIN Kategorije kv ON kv.rn = ((k.rn + rb.rb - 1) % kv.ukupno) + 1
+    JOIN Instruktori i ON i.rn = ((k.rn + rb.rb - 1) % i.ukupno) + 1
+    JOIN Tipovi t ON t.Tip = CASE WHEN rb.rb = 1 THEN N'Prakticna' ELSE N'Teorijska' END
+)
+INSERT INTO Obuka (
+    Kategorija_id, Glavni_Instruktor_id, Kandidat_id, Tip_Obuke,
+    Datum_pocetka, Datum_zavrsetka, Status
+)
+SELECT
+    Kategorija_id,
+    Instruktor_id,
+    Kandidat_id,
+    Tip_Obuke,
+    Datum_pocetka,
+    Datum_zavrsetka,
+    Status
+FROM DodatneObuke do
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Obuka o
+    WHERE o.Kandidat_id = do.Kandidat_id
+      AND o.Kategorija_id = do.Kategorija_id
+      AND o.Datum_pocetka = do.Datum_pocetka
+);
+
+;WITH Grupe AS (
+    SELECT
+        Id,
+        ROW_NUMBER() OVER (ORDER BY Datum_kreiranja) AS rn,
+        COUNT(*) OVER () AS ukupno
+    FROM Grupa
+),
+Obuke AS (
+    SELECT
+        Id,
+        Datum_pocetka,
+        ROW_NUMBER() OVER (ORDER BY Datum_pocetka, Id) AS rn
+    FROM Obuka
+    WHERE Datum_pocetka >= '2026-06-01'
+)
+INSERT INTO Kandidat_grupa (Grupa_id, Obuka_id, Datum_od, Datum_do)
+SELECT
+    g.Id,
+    o.Id,
+    o.Datum_pocetka,
+    NULL
+FROM Obuke o
+JOIN Grupe g ON g.rn = ((o.rn - 1) % g.ukupno) + 1
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Kandidat_grupa kg
+    WHERE kg.Grupa_id = g.Id
+      AND kg.Obuka_id = o.Id
+);
+
+;WITH Brojevi AS (
+    SELECT TOP (80)
+        ROW_NUMBER() OVER (ORDER BY object_id) AS n
+    FROM sys.all_objects
+),
+Tipovi AS (
+    SELECT Id, Tip
+    FROM Tip_obuke
+    WHERE Tip IN (N'Teorijska', N'Prakticna')
+)
+INSERT INTO Polaganje (Tip_id, Pocetak, Kraj)
+SELECT
+    t.Id,
+    DATEADD(hour, 9 + (b.n % 5), CONVERT(datetime2, DATEADD(day, b.n * 5, CONVERT(date, '2026-07-01')))),
+    DATEADD(hour, 10 + (b.n % 5), CONVERT(datetime2, DATEADD(day, b.n * 5, CONVERT(date, '2026-07-01'))))
+FROM Brojevi b
+JOIN Tipovi t ON t.Tip = CASE WHEN b.n % 2 = 0 THEN N'Teorijska' ELSE N'Prakticna' END
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Polaganje p
+    WHERE p.Pocetak = DATEADD(hour, 9 + (b.n % 5), CONVERT(datetime2, DATEADD(day, b.n * 5, CONVERT(date, '2026-07-01'))))
+);
+
+;WITH Polaganja AS (
+    SELECT
+        Id,
+        ROW_NUMBER() OVER (ORDER BY Pocetak) AS rn,
+        COUNT(*) OVER () AS ukupno
+    FROM Polaganje
+    WHERE Pocetak >= '2026-07-01'
+),
+Obuke AS (
+    SELECT
+        Id,
+        ROW_NUMBER() OVER (ORDER BY Datum_pocetka, Id) AS rn
+    FROM Obuka
+    WHERE Datum_pocetka >= '2026-06-01'
+)
+INSERT INTO Polaganje_kandidat (Polaganje_id, Obuka_id, Uspesno, Broj_Poenta)
+SELECT
+    p.Id,
+    o.Id,
+    CASE
+        WHEN o.rn % 9 = 0 THEN NULL
+        WHEN o.rn % 4 = 0 THEN 0
+        ELSE 1
+    END,
+    CASE
+        WHEN o.rn % 9 = 0 THEN NULL
+        WHEN o.rn % 4 = 0 THEN 55 + (o.rn % 10)
+        ELSE 75 + (o.rn % 25)
+    END
+FROM Obuke o
+JOIN Polaganja p ON p.rn = ((o.rn - 1) % p.ukupno) + 1
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Polaganje_kandidat pk
+    WHERE pk.Polaganje_id = p.Id
+      AND pk.Obuka_id = o.Id
+);
+
+;WITH Polaganja AS (
+    SELECT
+        Id,
+        ROW_NUMBER() OVER (ORDER BY Pocetak) AS rn
+    FROM Polaganje
+    WHERE Pocetak >= '2026-07-01'
+),
+Nadzornici AS (
+    SELECT
+        z.Id,
+        ROW_NUMBER() OVER (ORDER BY z.JMBG) AS rn,
+        COUNT(*) OVER () AS ukupno
+    FROM Zaposleni z
+    JOIN Zaposleni_Funkcija zf ON zf.Id_zaposlenog = z.Id
+    JOIN Funkcije_Zaposlenih f ON f.Id = zf.Id_funkcije
+    WHERE f.Ime_funkcije IN (N'Nadzornik polaganja', N'Predavac teorije', N'Direktor')
+)
+INSERT INTO Nadzornici_polaganja (Polaganje_id, Nadzornik_id)
+SELECT
+    p.Id,
+    n.Id
+FROM Polaganja p
+JOIN Nadzornici n ON n.rn = ((p.rn - 1) % n.ukupno) + 1
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Nadzornici_polaganja np
+    WHERE np.Polaganje_id = p.Id
+      AND np.Nadzornik_id = n.Id
+);
+
+;WITH Brojevi AS (
+    SELECT TOP (600)
+        ROW_NUMBER() OVER (ORDER BY object_id) AS n
+    FROM sys.all_objects
+),
+DodatniCasovi AS (
+    SELECT
+        o.Id AS Obuka_id,
+        o.Glavni_Instruktor_id AS Instruktor_id,
+        t.Id AS Tip_id,
+        voz.Id AS Vozilo_id,
+        b.n,
+        DATEADD(day, b.n, CONVERT(date, '2026-06-01')) AS Datum,
+        DATEADD(hour, 8 + (b.n % 8), CONVERT(datetime2, DATEADD(day, b.n, CONVERT(date, '2026-06-01')))) AS Pocetak
+    FROM Obuka o
+    CROSS JOIN Brojevi b
+    JOIN Tip_obuke t ON t.Tip = N'Prakticna'
+    CROSS APPLY (
+        SELECT TOP (1) v.Id
+        FROM Vozilo v
+        WHERE v.Kategorija_id = o.Kategorija_id
+        ORDER BY v.Registracija
+    ) voz
+    WHERE o.Glavni_Instruktor_id IS NOT NULL
+)
+INSERT INTO Cas (
+    Instruktor_id, Tip_id, Lokacija, Datum, Pocetak, Kraj,
+    Status, Obuka_id, Vozilo_id, Grupa_id
+)
+SELECT
+    dc.Instruktor_id,
+    dc.Tip_id,
+    N'Dodatni prakticni cas',
+    dc.Datum,
+    dc.Pocetak,
+    DATEADD(minute, 45, dc.Pocetak),
+    CASE WHEN dc.n % 10 = 0 THEN N'Otkazan' ELSE N'Odrzan' END,
+    dc.Obuka_id,
+    dc.Vozilo_id,
+    NULL
+FROM DodatniCasovi dc
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Cas c
+    WHERE c.Obuka_id = dc.Obuka_id
+      AND c.Pocetak = dc.Pocetak
+      AND c.Kraj = DATEADD(minute, 45, dc.Pocetak)
+);
+
+;WITH Brojevi AS (
+    SELECT TOP (200)
+        ROW_NUMBER() OVER (ORDER BY object_id) AS n
+    FROM sys.all_objects
+),
+DodatneUplate AS (
+    SELECT
+        o.Id AS Obuka_id,
+        c.Id AS Cenovnik_id,
+        b.n,
+        DATEADD(day, b.n * 3, CONVERT(date, '2026-06-01')) AS Datum,
+        CAST(2500.00 AS DECIMAL(10, 2)) AS Iznos
+    FROM Obuka o
+    CROSS JOIN Brojevi b
+    JOIN Cenovnik c ON c.Naziv = N'Dodatni cas voznje' AND c.Datum_do IS NULL
+)
+INSERT INTO Uplata (Cenovnik_id, Obuka_id, Iznos, Datum, Nacin_placanja)
+SELECT
+    du.Cenovnik_id,
+    du.Obuka_id,
+    du.Iznos,
+    du.Datum,
+    CASE du.n % 3
+        WHEN 0 THEN N'Gotovina'
+        WHEN 1 THEN N'Kartica'
+        ELSE N'Prenos'
+    END
+FROM DodatneUplate du
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Uplata u
+    WHERE u.Cenovnik_id = du.Cenovnik_id
+      AND u.Obuka_id = du.Obuka_id
+      AND u.Iznos = du.Iznos
+      AND u.Datum = du.Datum
+);
