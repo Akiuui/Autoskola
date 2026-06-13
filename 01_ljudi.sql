@@ -1,5 +1,6 @@
 CREATE TABLE [Kandidat] (
-    [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+    [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY
+        CONSTRAINT [DF_Kandidat_Id] DEFAULT (newid()),
     [Istek_lekarskog] DATE,
     [Ime] NVARCHAR(50) NOT NULL,
     [Ime_roditelja] NVARCHAR(50),
@@ -21,7 +22,8 @@ CREATE TABLE [Kandidat] (
 GO
 
 CREATE TABLE [Zaposleni] (
-    [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+    [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY
+        CONSTRAINT [DF_Zaposleni_Id] DEFAULT (newid()),
     [Kvalifikacija] NVARCHAR(100),
     [Aktivni_ugovor] BIT NOT NULL
         CONSTRAINT [DF_Zaposleni_Aktivni_ugovor] DEFAULT (1),
