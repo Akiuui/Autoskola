@@ -1,18 +1,14 @@
 CREATE TABLE [Vozilo] (
-    -- Identifikator vozila se automatski generise.
     [Id] UNIQUEIDENTIFIER NOT NULL CONSTRAINT [DF_Vozilo_Id] DEFAULT (newid()),
     [Registracija] NVARCHAR(20) NOT NULL,
     [Marka] NVARCHAR(50) NOT NULL,
     [Model] NVARCHAR(50) NOT NULL,
     [Godiste] INT NOT NULL,
     [Kategorija_id] UNIQUEIDENTIFIER NOT NULL,
-    -- Novo vozilo podrazumevano ima kilometrazu 0.
     [Kilometraza] INT NOT NULL CONSTRAINT [DF_Vozilo_Kilometraza] DEFAULT (0),
     [Datum_registracije] DATE NOT NULL,
-    -- Datum kreiranja vozila se automatski postavlja pri unosu.
     [Kreiran_datum] DATETIME2 NOT NULL CONSTRAINT [DF_Vozilo_Kreiran_datum] DEFAULT (getdate()),
     [Izmenjen_datum] DATETIME2,
-    -- Svako vozilo mora imati jedinstven identifikator.
     CONSTRAINT [PK_Vozilo] PRIMARY KEY ([Id]),
     -- Registracija vozila ne sme da se ponavlja.
     CONSTRAINT [UQ_Vozilo_Registracija] UNIQUE ([Registracija]),
@@ -24,7 +20,6 @@ CREATE TABLE [Vozilo] (
 GO
 
 CREATE TABLE [Cas] (
-    -- Identifikator casa se automatski generise.
     [Id] UNIQUEIDENTIFIER NOT NULL CONSTRAINT [DF_Cas_Id] DEFAULT (newid()),
     [Instruktor_id] UNIQUEIDENTIFIER NOT NULL,
     [Tip_id] UNIQUEIDENTIFIER NOT NULL,
@@ -32,15 +27,12 @@ CREATE TABLE [Cas] (
     [Datum] DATE NOT NULL,
     [Pocetak] DATETIME2 NOT NULL,
     [Kraj] DATETIME2 NOT NULL,
-    -- Novi cas je podrazumevano zakazan.
     [Status] NVARCHAR(20) NOT NULL CONSTRAINT [DF_Cas_Status] DEFAULT (N'Zakazan'),
     [Obuka_id] UNIQUEIDENTIFIER,
     [Vozilo_id] UNIQUEIDENTIFIER,
     [Grupa_id] UNIQUEIDENTIFIER,
-    -- Datum kreiranja casa se automatski postavlja pri unosu.
     [Kreiran_datum] DATETIME2 NOT NULL CONSTRAINT [DF_Cas_Kreiran_datum] DEFAULT (getdate()),
     [Izmenjen_datum] DATETIME2,
-    -- Svaki cas mora imati jedinstven identifikator.
     CONSTRAINT [PK_Cas] PRIMARY KEY ([Id]),
     -- Status casa moze biti samo jedna od dozvoljenih vrednosti.
     CONSTRAINT [CK_Cas_Status] CHECK ([Status] IN (N'Zakazan', N'Odrzan', N'Otkazan')),
@@ -48,7 +40,7 @@ CREATE TABLE [Cas] (
     CONSTRAINT [CK_Cas_Vreme] CHECK ([Kraj] > [Pocetak]),
     -- Datum casa mora odgovarati datumima pocetka i kraja casa.
     CONSTRAINT [CK_Cas_Datum_Pocetak] CHECK (CONVERT(date, [Pocetak]) = [Datum] AND CONVERT(date, [Kraj]) = [Datum]),
-    -- Prakticni cas ima obuku i vozilo, a teorijski/grupni cas ima samo grupu.
+    -- Prakticni cas ima obuku i vozilo, a teorijski cas ima samo grupu.
     CONSTRAINT [CK_Cas_Tip_Polja] CHECK (
         (
             [Obuka_id] IS NOT NULL

@@ -1,13 +1,10 @@
 CREATE TABLE [Polaganje] (
-    -- Identifikator polaganja se automatski generise.
     [Id] UNIQUEIDENTIFIER NOT NULL CONSTRAINT [DF_Polaganje_Id] DEFAULT (newid()),
     [Tip_id] UNIQUEIDENTIFIER NOT NULL,
     [Pocetak] DATETIME2 NOT NULL,
     [Kraj] DATETIME2 NOT NULL,
-    -- Datum kreiranja polaganja se automatski postavlja pri unosu.
     [Kreiran_datum] DATETIME2 NOT NULL CONSTRAINT [DF_Polaganje_Kreiran_datum] DEFAULT (getdate()),
     [Izmenjen_datum] DATETIME2,
-    -- Svako polaganje mora imati jedinstven identifikator.
     CONSTRAINT [PK_Polaganje] PRIMARY KEY ([Id]),
     -- Vreme zavrsetka polaganja mora biti posle vremena pocetka.
     CONSTRAINT [CK_Polaganje_Vreme] CHECK ([Kraj] > [Pocetak])

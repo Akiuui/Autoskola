@@ -38,7 +38,6 @@ CREATE TABLE [Obuka] (
     [Tip_Obuke] UNIQUEIDENTIFIER NOT NULL,
     [Datum_pocetka] DATE NOT NULL,
     [Datum_zavrsetka] DATE,
-    -- Nova obuka je podrazumevano aktivna.
     [Status] NVARCHAR(20) NOT NULL CONSTRAINT [DF_Obuka_Status] DEFAULT (N'Aktivan'),
     [Kreiran_datum] DATETIME2 NOT NULL CONSTRAINT [DF_Obuka_Kreiran_datum] DEFAULT (getdate()),
     [Izmenjen_datum] DATETIME2,
