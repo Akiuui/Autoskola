@@ -1,223 +1,268 @@
 -- Test podaci za bazu Auto skola.
 -- Pokrenuti nakon kreiranja svih tabela.
+-- Id kolone se ne unose rucno; baze ih generise preko DEFAULT (newid()).
 
 INSERT INTO [Kandidat] (
-    [Id], [Istek_lekarskog], [Ime], [Ime_roditelja], [Prezime], [JMBG],
+    [Istek_lekarskog], [Ime], [Ime_roditelja], [Prezime], [JMBG],
     [Istek_licne_karte], [Telefon], [Email], [Datum_rodjenja]
 )
-SELECT *
+SELECT v.[Istek_lekarskog], v.[Ime], v.[Ime_roditelja], v.[Prezime], v.[JMBG],
+       v.[Istek_licne_karte], v.[Telefon], v.[Email], v.[Datum_rodjenja]
 FROM (VALUES
-    ('11111111-1111-1111-1111-111111111111', '2026-12-15', N'Marko', N'Petar', N'Markovic', '0101000710001', '2030-05-20', '0601234567', 'marko.markovic@example.com', '2000-01-01'),
-    ('11111111-1111-1111-1111-111111111112', '2027-02-10', N'Jelena', N'Milan', N'Jovanovic', '1502002715002', '2031-04-11', '0602345678', 'jelena.jovanovic@example.com', '2002-02-15'),
-    ('11111111-1111-1111-1111-111111111113', '2026-09-01', N'Nikola', N'Dragan', N'Petrovic', '2303003710003', '2029-12-01', '0603456789', 'nikola.petrovic@example.com', '2003-03-23'),
-    ('11111111-1111-1111-1111-111111111114', '2026-11-30', N'Ana', N'Goran', N'Ilic', '1204004715004', '2032-07-19', '0604567890', 'ana.ilic@example.com', '2004-04-12'),
-    ('11111111-1111-1111-1111-111111111115', '2027-01-20', N'Luka', N'Zoran', N'Nikolic', '0505005710005', '2030-10-25', '0605678901', 'luka.nikolic@example.com', '2005-05-05')
-) AS v([Id], [Istek_lekarskog], [Ime], [Ime_roditelja], [Prezime], [JMBG], [Istek_licne_karte], [Telefon], [Email], [Datum_rodjenja])
-WHERE NOT EXISTS (SELECT 1 FROM [Kandidat] k WHERE k.[Id] = v.[Id]);
-GO
+    ('2026-12-15', N'Marko', N'Petar', N'Markovic', '0101000710001', '2030-05-20', '0601234567', 'marko.markovic@example.com', '2000-01-01'),
+    ('2027-02-10', N'Jelena', N'Milan', N'Jovanovic', '1502002715002', '2031-04-11', '0602345678', 'jelena.jovanovic@example.com', '2002-02-15'),
+    ('2026-09-01', N'Nikola', N'Dragan', N'Petrovic', '2303003710003', '2029-12-01', '0603456789', 'nikola.petrovic@example.com', '2003-03-23'),
+    ('2026-11-30', N'Ana', N'Goran', N'Ilic', '1204004715004', '2032-07-19', '0604567890', 'ana.ilic@example.com', '2004-04-12'),
+    ('2027-01-20', N'Luka', N'Zoran', N'Nikolic', '0505005710005', '2030-10-25', '0605678901', 'luka.nikolic@example.com', '2005-05-05')
+) AS v([Istek_lekarskog], [Ime], [Ime_roditelja], [Prezime], [JMBG], [Istek_licne_karte], [Telefon], [Email], [Datum_rodjenja])
+WHERE NOT EXISTS (SELECT 1 FROM [Kandidat] k WHERE k.[JMBG] = v.[JMBG]);
 
 INSERT INTO [Zaposleni] (
-    [Id], [Kvalifikacija], [Aktivni_ugovor], [Ime], [Ime_roditelja], [Prezime],
+    [Kvalifikacija], [Aktivni_ugovor], [Ime], [Ime_roditelja], [Prezime],
     [JMBG], [Istek_licne_karte], [Telefon], [Email], [Datum_rodjenja]
 )
-SELECT *
+SELECT v.[Kvalifikacija], v.[Aktivni_ugovor], v.[Ime], v.[Ime_roditelja], v.[Prezime],
+       v.[JMBG], v.[Istek_licne_karte], v.[Telefon], v.[Email], v.[Datum_rodjenja]
 FROM (VALUES
-    ('22222222-2222-2222-2222-222222222221', N'Diplomirani inzenjer saobracaja', 1, N'Milos', N'Radovan', N'Savic', '0202000710006', '2030-03-10', '0611111111', 'milos.savic@autoskolatest.rs', '1985-02-02'),
-    ('22222222-2222-2222-2222-222222222222', N'Instruktor B kategorije', 1, N'Dejan', N'Branko', N'Kostic', '0303000710007', '2029-08-17', '0612222222', 'dejan.kostic@autoskolatest.rs', '1988-03-03'),
-    ('22222222-2222-2222-2222-222222222223', N'Instruktor A i B kategorije', 1, N'Ivan', N'Zeljko', N'Pavlovic', '0404000710008', '2031-11-05', '0613333333', 'ivan.pavlovic@autoskolatest.rs', '1990-04-04'),
-    ('22222222-2222-2222-2222-222222222224', N'Administrativni radnik', 1, N'Marija', N'Dusan', N'Ristic', '0505000715009', '2032-01-22', '0614444444', 'marija.ristic@autoskolatest.rs', '1992-05-05'),
-    ('22222222-2222-2222-2222-222222222225', N'Ispitivac teorije', 1, N'Stefan', N'Mirko', N'Lazic', '0606000710010', '2028-06-14', '0615555555', 'stefan.lazic@autoskolatest.rs', '1982-06-06')
-) AS v([Id], [Kvalifikacija], [Aktivni_ugovor], [Ime], [Ime_roditelja], [Prezime], [JMBG], [Istek_licne_karte], [Telefon], [Email], [Datum_rodjenja])
-WHERE NOT EXISTS (SELECT 1 FROM [Zaposleni] z WHERE z.[Id] = v.[Id]);
-GO
+    (N'Diplomirani inzenjer saobracaja', 1, N'Milos', N'Radovan', N'Savic', '0202000710006', '2030-03-10', '0611111111', 'milos.savic@autoskolatest.rs', '1985-02-02'),
+    (N'Instruktor B kategorije', 1, N'Dejan', N'Branko', N'Kostic', '0303000710007', '2029-08-17', '0612222222', 'dejan.kostic@autoskolatest.rs', '1988-03-03'),
+    (N'Instruktor A i B kategorije', 1, N'Ivan', N'Zeljko', N'Pavlovic', '0404000710008', '2031-11-05', '0613333333', 'ivan.pavlovic@autoskolatest.rs', '1990-04-04'),
+    (N'Administrativni radnik', 1, N'Marija', N'Dusan', N'Ristic', '0505000715009', '2032-01-22', '0614444444', 'marija.ristic@autoskolatest.rs', '1992-05-05'),
+    (N'Ispitivac teorije', 1, N'Stefan', N'Mirko', N'Lazic', '0606000710010', '2028-06-14', '0615555555', 'stefan.lazic@autoskolatest.rs', '1982-06-06')
+) AS v([Kvalifikacija], [Aktivni_ugovor], [Ime], [Ime_roditelja], [Prezime], [JMBG], [Istek_licne_karte], [Telefon], [Email], [Datum_rodjenja])
+WHERE NOT EXISTS (SELECT 1 FROM [Zaposleni] z WHERE z.[JMBG] = v.[JMBG]);
 
-INSERT INTO [Funkcije_Zaposlenih] ([Id], [Ime_funkcije], [Minimalna_kvalifikacija], [Opis])
-SELECT *
+INSERT INTO [Funkcije_Zaposlenih] ([Ime_funkcije], [Minimalna_kvalifikacija], [Opis])
+SELECT v.[Ime_funkcije], v.[Minimalna_kvalifikacija], v.[Opis]
 FROM (VALUES
-    ('33333333-3333-3333-3333-333333333331', N'Direktor', N'VII stepen', N'Organizacija rada auto skole'),
-    ('33333333-3333-3333-3333-333333333332', N'Instruktor', N'Instruktor voznje', N'Izvodi prakticne casove'),
-    ('33333333-3333-3333-3333-333333333333', N'Predavac teorije', N'Licenca za teorijsku nastavu', N'Izvodi teorijsku nastavu'),
-    ('33333333-3333-3333-3333-333333333334', N'Administrator', N'SSS', N'Vodi evidenciju kandidata i uplata'),
-    ('33333333-3333-3333-3333-333333333335', N'Nadzornik polaganja', N'Licenca ispitivaca', N'Nadzire polaganja kandidata')
-) AS v([Id], [Ime_funkcije], [Minimalna_kvalifikacija], [Opis])
-WHERE NOT EXISTS (SELECT 1 FROM [Funkcije_Zaposlenih] f WHERE f.[Id] = v.[Id]);
-GO
+    (N'Direktor', N'VII stepen', N'Organizacija rada auto skole'),
+    (N'Instruktor', N'Instruktor voznje', N'Izvodi prakticne casove'),
+    (N'Predavac teorije', N'Licenca za teorijsku nastavu', N'Izvodi teorijsku nastavu'),
+    (N'Administrator', N'SSS', N'Vodi evidenciju kandidata i uplata'),
+    (N'Nadzornik polaganja', N'Licenca ispitivaca', N'Nadzire polaganja kandidata')
+) AS v([Ime_funkcije], [Minimalna_kvalifikacija], [Opis])
+WHERE NOT EXISTS (SELECT 1 FROM [Funkcije_Zaposlenih] f WHERE f.[Ime_funkcije] = v.[Ime_funkcije]);
 
 INSERT INTO [Zaposleni_Funkcija] ([Id_zaposlenog], [Id_funkcije])
-SELECT *
+SELECT z.[Id], f.[Id]
 FROM (VALUES
-    ('22222222-2222-2222-2222-222222222221', '33333333-3333-3333-3333-333333333331'),
-    ('22222222-2222-2222-2222-222222222222', '33333333-3333-3333-3333-333333333332'),
-    ('22222222-2222-2222-2222-222222222223', '33333333-3333-3333-3333-333333333332'),
-    ('22222222-2222-2222-2222-222222222224', '33333333-3333-3333-3333-333333333334'),
-    ('22222222-2222-2222-2222-222222222225', '33333333-3333-3333-3333-333333333333'),
-    ('22222222-2222-2222-2222-222222222225', '33333333-3333-3333-3333-333333333335')
-) AS v([Id_zaposlenog], [Id_funkcije])
+    ('0202000710006', N'Direktor'),
+    ('0303000710007', N'Instruktor'),
+    ('0404000710008', N'Instruktor'),
+    ('0505000715009', N'Administrator'),
+    ('0606000710010', N'Predavac teorije'),
+    ('0606000710010', N'Nadzornik polaganja')
+) AS v([JMBG], [Ime_funkcije])
+JOIN [Zaposleni] z ON z.[JMBG] = v.[JMBG]
+JOIN [Funkcije_Zaposlenih] f ON f.[Ime_funkcije] = v.[Ime_funkcije]
 WHERE NOT EXISTS (
     SELECT 1
     FROM [Zaposleni_Funkcija] zf
-    WHERE zf.[Id_zaposlenog] = v.[Id_zaposlenog]
-      AND zf.[Id_funkcije] = v.[Id_funkcije]
+    WHERE zf.[Id_zaposlenog] = z.[Id]
+      AND zf.[Id_funkcije] = f.[Id]
 );
-GO
 
-INSERT INTO [Zaposleni_Izostanak] ([Id], [Zaposleni_id], [Tip], [Datum_od], [Datum_do])
-SELECT *
+INSERT INTO [Zaposleni_Izostanak] ([Zaposleni_id], [Tip], [Datum_od], [Datum_do])
+SELECT z.[Id], v.[Tip], v.[Datum_od], v.[Datum_do]
 FROM (VALUES
-    ('44444444-4444-4444-4444-444444444441', '22222222-2222-2222-2222-222222222223', N'GODISNJI', '2026-07-01', '2026-07-10'),
-    ('44444444-4444-4444-4444-444444444442', '22222222-2222-2222-2222-222222222224', N'BOL', '2026-04-15', '2026-04-19')
-) AS v([Id], [Zaposleni_id], [Tip], [Datum_od], [Datum_do])
-WHERE NOT EXISTS (SELECT 1 FROM [Zaposleni_Izostanak] zi WHERE zi.[Id] = v.[Id]);
-GO
+    ('0404000710008', N'GODISNJI', '2026-07-01', '2026-07-10'),
+    ('0505000715009', N'BOL', '2026-04-15', '2026-04-19')
+) AS v([JMBG], [Tip], [Datum_od], [Datum_do])
+JOIN [Zaposleni] z ON z.[JMBG] = v.[JMBG]
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM [Zaposleni_Izostanak] zi
+    WHERE zi.[Zaposleni_id] = z.[Id]
+      AND zi.[Tip] = v.[Tip]
+      AND zi.[Datum_od] = v.[Datum_od]
+);
 
-INSERT INTO [Tip_obuke] ([Id], [Tip], [Opis])
-SELECT *
+INSERT INTO [Tip_obuke] ([Tip], [Opis])
+SELECT v.[Tip], v.[Opis]
 FROM (VALUES
-    ('55555555-5555-5555-5555-555555555551', N'Teorijska', N'Teorijska nastava i propisi'),
-    ('55555555-5555-5555-5555-555555555552', N'Prakticna', N'Prakticna obuka voznje'),
-    ('55555555-5555-5555-5555-555555555553', N'Prva Pomoc', N'Obuka iz prve pomoci')
-) AS v([Id], [Tip], [Opis])
-WHERE NOT EXISTS (SELECT 1 FROM [Tip_obuke] t WHERE t.[Id] = v.[Id]);
-GO
+    (N'Teorijska', N'Teorijska nastava i propisi'),
+    (N'Prakticna', N'Prakticna obuka voznje'),
+    (N'Prva Pomoc', N'Obuka iz prve pomoci')
+) AS v([Tip], [Opis])
+WHERE NOT EXISTS (SELECT 1 FROM [Tip_obuke] t WHERE t.[Tip] = v.[Tip]);
 
-INSERT INTO [Kategorija_vozacke] ([Id], [Oznaka], [Opis])
-SELECT *
+INSERT INTO [Kategorija_vozacke] ([Oznaka], [Opis])
+SELECT v.[Oznaka], v.[Opis]
 FROM (VALUES
-    ('66666666-6666-6666-6666-666666666661', 'A', N'Motocikli'),
-    ('66666666-6666-6666-6666-666666666662', 'B', N'Putnicka vozila'),
-    ('66666666-6666-6666-6666-666666666663', 'C', N'Teretna vozila'),
-    ('66666666-6666-6666-6666-666666666664', 'D', N'Autobusi')
-) AS v([Id], [Oznaka], [Opis])
-WHERE NOT EXISTS (SELECT 1 FROM [Kategorija_vozacke] k WHERE k.[Id] = v.[Id]);
-GO
+    ('A', N'Motocikli'),
+    ('B', N'Putnicka vozila'),
+    ('C', N'Teretna vozila'),
+    ('D', N'Autobusi')
+) AS v([Oznaka], [Opis])
+WHERE NOT EXISTS (SELECT 1 FROM [Kategorija_vozacke] k WHERE k.[Oznaka] = v.[Oznaka]);
 
-INSERT INTO [Grupa] ([Id], [Datum_kreiranja], [Datum_zavrsetka])
-SELECT *
+INSERT INTO [Grupa] ([Datum_kreiranja], [Datum_zavrsetka])
+SELECT v.[Datum_kreiranja], v.[Datum_zavrsetka]
 FROM (VALUES
-    ('77777777-7777-7777-7777-777777777771', '2026-04-01', NULL),
-    ('77777777-7777-7777-7777-777777777772', '2026-05-01', NULL),
-    ('77777777-7777-7777-7777-777777777773', '2026-03-01', '2026-04-20')
-) AS v([Id], [Datum_kreiranja], [Datum_zavrsetka])
-WHERE NOT EXISTS (SELECT 1 FROM [Grupa] g WHERE g.[Id] = v.[Id]);
-GO
+    ('2026-04-01', NULL),
+    ('2026-05-01', NULL),
+    ('2026-03-01', '2026-04-20')
+) AS v([Datum_kreiranja], [Datum_zavrsetka])
+WHERE NOT EXISTS (SELECT 1 FROM [Grupa] g WHERE g.[Datum_kreiranja] = v.[Datum_kreiranja]);
 
 INSERT INTO [Obuka] (
-    [Id], [Kategorija_id], [Glavni_Instruktor_id], [Kandidat_id], [Tip_Obuke],
+    [Kategorija_id], [Glavni_Instruktor_id], [Kandidat_id], [Tip_Obuke],
     [Datum_pocetka], [Datum_zavrsetka], [Status]
 )
-SELECT *
+SELECT kv.[Id], z.[Id], k.[Id], t.[Id], v.[Datum_pocetka], v.[Datum_zavrsetka], v.[Status]
 FROM (VALUES
-    ('88888888-8888-8888-8888-888888888881', '66666666-6666-6666-6666-666666666662', '22222222-2222-2222-2222-222222222222', '11111111-1111-1111-1111-111111111111', '55555555-5555-5555-5555-555555555552', '2026-04-05', NULL, N'Aktivan'),
-    ('88888888-8888-8888-8888-888888888882', '66666666-6666-6666-6666-666666666662', '22222222-2222-2222-2222-222222222223', '11111111-1111-1111-1111-111111111112', '55555555-5555-5555-5555-555555555552', '2026-04-10', NULL, N'Aktivan'),
-    ('88888888-8888-8888-8888-888888888883', '66666666-6666-6666-6666-666666666661', '22222222-2222-2222-2222-222222222223', '11111111-1111-1111-1111-111111111113', '55555555-5555-5555-5555-555555555552', '2026-03-15', '2026-05-20', N'Zavrsen'),
-    ('88888888-8888-8888-8888-888888888884', '66666666-6666-6666-6666-666666666662', '22222222-2222-2222-2222-222222222222', '11111111-1111-1111-1111-111111111114', '55555555-5555-5555-5555-555555555551', '2026-05-05', NULL, N'Aktivan'),
-    ('88888888-8888-8888-8888-888888888885', '66666666-6666-6666-6666-666666666663', '22222222-2222-2222-2222-222222222221', '11111111-1111-1111-1111-111111111115', '55555555-5555-5555-5555-555555555552', '2026-02-01', '2026-03-05', N'Prekinut')
-) AS v([Id], [Kategorija_id], [Glavni_Instruktor_id], [Kandidat_id], [Tip_Obuke], [Datum_pocetka], [Datum_zavrsetka], [Status])
-WHERE NOT EXISTS (SELECT 1 FROM [Obuka] o WHERE o.[Id] = v.[Id]);
-GO
+    ('0101000710001', 'B', '0303000710007', N'Prakticna', '2026-04-05', NULL, N'Aktivan'),
+    ('1502002715002', 'B', '0404000710008', N'Prakticna', '2026-04-10', NULL, N'Aktivan'),
+    ('2303003710003', 'A', '0404000710008', N'Prakticna', '2026-03-15', '2026-05-20', N'Zavrsen'),
+    ('1204004715004', 'B', '0303000710007', N'Teorijska', '2026-05-05', NULL, N'Aktivan'),
+    ('0505005710005', 'C', '0202000710006', N'Prakticna', '2026-02-01', '2026-03-05', N'Prekinut')
+) AS v([Kandidat_JMBG], [Oznaka], [Instruktor_JMBG], [Tip], [Datum_pocetka], [Datum_zavrsetka], [Status])
+JOIN [Kandidat] k ON k.[JMBG] = v.[Kandidat_JMBG]
+JOIN [Kategorija_vozacke] kv ON kv.[Oznaka] = v.[Oznaka]
+JOIN [Zaposleni] z ON z.[JMBG] = v.[Instruktor_JMBG]
+JOIN [Tip_obuke] t ON t.[Tip] = v.[Tip]
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM [Obuka] o
+    WHERE o.[Kandidat_id] = k.[Id]
+      AND o.[Kategorija_id] = kv.[Id]
+      AND o.[Datum_pocetka] = v.[Datum_pocetka]
+);
 
-INSERT INTO [Kandidat_grupa] ([Id], [Grupa_id], [Obuka_id], [Datum_od], [Datum_do])
-SELECT *
+INSERT INTO [Kandidat_grupa] ([Grupa_id], [Obuka_id], [Datum_od], [Datum_do])
+SELECT g.[Id], o.[Id], v.[Datum_od], v.[Datum_do]
 FROM (VALUES
-    ('99999999-9999-9999-9999-999999999991', '77777777-7777-7777-7777-777777777771', '88888888-8888-8888-8888-888888888881', '2026-04-05', NULL),
-    ('99999999-9999-9999-9999-999999999992', '77777777-7777-7777-7777-777777777771', '88888888-8888-8888-8888-888888888882', '2026-04-10', NULL),
-    ('99999999-9999-9999-9999-999999999993', '77777777-7777-7777-7777-777777777773', '88888888-8888-8888-8888-888888888883', '2026-03-15', '2026-04-20'),
-    ('99999999-9999-9999-9999-999999999994', '77777777-7777-7777-7777-777777777772', '88888888-8888-8888-8888-888888888884', '2026-05-05', NULL)
-) AS v([Id], [Grupa_id], [Obuka_id], [Datum_od], [Datum_do])
-WHERE NOT EXISTS (SELECT 1 FROM [Kandidat_grupa] kg WHERE kg.[Id] = v.[Id]);
-GO
+    ('2026-04-01', '0101000710001', '2026-04-05', NULL),
+    ('2026-04-01', '1502002715002', '2026-04-10', NULL),
+    ('2026-03-01', '2303003710003', '2026-03-15', '2026-04-20'),
+    ('2026-05-01', '1204004715004', '2026-05-05', NULL)
+) AS v([Datum_kreiranja_grupe], [Kandidat_JMBG], [Datum_od], [Datum_do])
+JOIN [Grupa] g ON g.[Datum_kreiranja] = v.[Datum_kreiranja_grupe]
+JOIN [Kandidat] k ON k.[JMBG] = v.[Kandidat_JMBG]
+JOIN [Obuka] o ON o.[Kandidat_id] = k.[Id] AND o.[Datum_pocetka] = v.[Datum_od]
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM [Kandidat_grupa] kg
+    WHERE kg.[Grupa_id] = g.[Id]
+      AND kg.[Obuka_id] = o.[Id]
+);
 
 INSERT INTO [Vozilo] (
-    [Id], [Registracija], [Marka], [Model], [Godiste], [Kategorija_id],
+    [Registracija], [Marka], [Model], [Godiste], [Kategorija_id],
     [Kilometraza], [Datum_registracije]
 )
-SELECT *
+SELECT v.[Registracija], v.[Marka], v.[Model], v.[Godiste], kv.[Id],
+       v.[Kilometraza], v.[Datum_registracije]
 FROM (VALUES
-    ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa1', 'BG-123-AA', N'Toyota', N'Yaris', 2020, '66666666-6666-6666-6666-666666666662', 45200, '2026-01-15'),
-    ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa2', 'NS-456-BB', N'Volkswagen', N'Golf', 2019, '66666666-6666-6666-6666-666666666662', 68800, '2026-02-20'),
-    ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa3', 'BG-789-CC', N'Yamaha', N'MT-07', 2021, '66666666-6666-6666-6666-666666666661', 18300, '2026-03-01'),
-    ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa4', 'KG-321-DD', N'Mercedes', N'Actros', 2018, '66666666-6666-6666-6666-666666666663', 142500, '2026-01-30')
-) AS v([Id], [Registracija], [Marka], [Model], [Godiste], [Kategorija_id], [Kilometraza], [Datum_registracije])
-WHERE NOT EXISTS (SELECT 1 FROM [Vozilo] voz WHERE voz.[Id] = v.[Id]);
-GO
+    ('BG-123-AA', N'Toyota', N'Yaris', 2020, 'B', 45200, '2026-01-15'),
+    ('NS-456-BB', N'Volkswagen', N'Golf', 2019, 'B', 68800, '2026-02-20'),
+    ('BG-789-CC', N'Yamaha', N'MT-07', 2021, 'A', 18300, '2026-03-01'),
+    ('KG-321-DD', N'Mercedes', N'Actros', 2018, 'C', 142500, '2026-01-30')
+) AS v([Registracija], [Marka], [Model], [Godiste], [Oznaka], [Kilometraza], [Datum_registracije])
+JOIN [Kategorija_vozacke] kv ON kv.[Oznaka] = v.[Oznaka]
+WHERE NOT EXISTS (SELECT 1 FROM [Vozilo] voz WHERE voz.[Registracija] = v.[Registracija]);
 
 INSERT INTO [Cas] (
-    [Id], [Instruktor_id], [Tip_id], [Lokacija], [Datum], [Pocetak], [Kraj],
+    [Instruktor_id], [Tip_id], [Lokacija], [Datum], [Pocetak], [Kraj],
     [Status], [Obuka_id], [Vozilo_id], [Grupa_id]
 )
-SELECT *
+SELECT z.[Id], t.[Id], v.[Lokacija], v.[Datum], v.[Pocetak], v.[Kraj], v.[Status],
+       o.[Id], voz.[Id], g.[Id]
 FROM (VALUES
-    ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbb1', '22222222-2222-2222-2222-222222222225', '55555555-5555-5555-5555-555555555551', N'Ucionica 1', '2026-05-06', '2026-05-06T17:00:00', '2026-05-06T18:30:00', N'Odrzan', NULL, NULL, '77777777-7777-7777-7777-777777777772'),
-    ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbb2', '22222222-2222-2222-2222-222222222222', '55555555-5555-5555-5555-555555555552', N'Poligon Novi Beograd', '2026-05-07', '2026-05-07T09:00:00', '2026-05-07T10:30:00', N'Odrzan', '88888888-8888-8888-8888-888888888881', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa1', NULL),
-    ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbb3', '22222222-2222-2222-2222-222222222223', '55555555-5555-5555-5555-555555555552', N'Gradska voznja', '2026-05-08', '2026-05-08T11:00:00', '2026-05-08T12:30:00', N'Odrzan', '88888888-8888-8888-8888-888888888882', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa2', NULL),
-    ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbb4', '22222222-2222-2222-2222-222222222223', '55555555-5555-5555-5555-555555555552', N'Poligon', '2026-05-09', '2026-05-09T13:00:00', '2026-05-09T14:30:00', N'Otkazan', '88888888-8888-8888-8888-888888888883', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa3', NULL),
-    ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbb5', '22222222-2222-2222-2222-222222222225', '55555555-5555-5555-5555-555555555553', N'Ucionica prve pomoci', '2026-05-10', '2026-05-10T16:00:00', '2026-05-10T18:00:00', N'Zakazan', NULL, NULL, '77777777-7777-7777-7777-777777777771')
-) AS v([Id], [Instruktor_id], [Tip_id], [Lokacija], [Datum], [Pocetak], [Kraj], [Status], [Obuka_id], [Vozilo_id], [Grupa_id])
-WHERE NOT EXISTS (SELECT 1 FROM [Cas] c WHERE c.[Id] = v.[Id]);
-GO
+    ('0606000710010', N'Teorijska', N'Ucionica 1', '2026-05-06', '2026-05-06T17:00:00', '2026-05-06T18:30:00', N'Odrzan', NULL, NULL, '2026-05-01'),
+    ('0303000710007', N'Prakticna', N'Poligon Novi Beograd', '2026-05-07', '2026-05-07T09:00:00', '2026-05-07T10:30:00', N'Odrzan', '0101000710001', 'BG-123-AA', NULL),
+    ('0404000710008', N'Prakticna', N'Gradska voznja', '2026-05-08', '2026-05-08T11:00:00', '2026-05-08T12:30:00', N'Odrzan', '1502002715002', 'NS-456-BB', NULL),
+    ('0404000710008', N'Prakticna', N'Poligon', '2026-05-09', '2026-05-09T13:00:00', '2026-05-09T14:30:00', N'Otkazan', '2303003710003', 'BG-789-CC', NULL),
+    ('0606000710010', N'Prva Pomoc', N'Ucionica prve pomoci', '2026-05-10', '2026-05-10T16:00:00', '2026-05-10T18:00:00', N'Zakazan', NULL, NULL, '2026-04-01')
+) AS v([Instruktor_JMBG], [Tip], [Lokacija], [Datum], [Pocetak], [Kraj], [Status], [Kandidat_JMBG], [Registracija], [Datum_kreiranja_grupe])
+JOIN [Zaposleni] z ON z.[JMBG] = v.[Instruktor_JMBG]
+JOIN [Tip_obuke] t ON t.[Tip] = v.[Tip]
+LEFT JOIN [Kandidat] k ON k.[JMBG] = v.[Kandidat_JMBG]
+LEFT JOIN [Obuka] o ON o.[Kandidat_id] = k.[Id]
+LEFT JOIN [Vozilo] voz ON voz.[Registracija] = v.[Registracija]
+LEFT JOIN [Grupa] g ON g.[Datum_kreiranja] = v.[Datum_kreiranja_grupe]
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM [Cas] c
+    WHERE c.[Instruktor_id] = z.[Id]
+      AND c.[Pocetak] = v.[Pocetak]
+      AND c.[Kraj] = v.[Kraj]
+);
 
-INSERT INTO [Polaganje] ([Id], [Tip_id], [Pocetak], [Kraj])
-SELECT *
+INSERT INTO [Polaganje] ([Tip_id], [Pocetak], [Kraj])
+SELECT t.[Id], v.[Pocetak], v.[Kraj]
 FROM (VALUES
-    ('cccccccc-cccc-cccc-cccc-ccccccccccc1', '55555555-5555-5555-5555-555555555551', '2026-05-20T09:00:00', '2026-05-20T10:00:00'),
-    ('cccccccc-cccc-cccc-cccc-ccccccccccc2', '55555555-5555-5555-5555-555555555552', '2026-05-25T08:00:00', '2026-05-25T12:00:00'),
-    ('cccccccc-cccc-cccc-cccc-ccccccccccc3', '55555555-5555-5555-5555-555555555551', '2026-06-01T10:00:00', '2026-06-01T11:00:00')
-) AS v([Id], [Tip_id], [Pocetak], [Kraj])
-WHERE NOT EXISTS (SELECT 1 FROM [Polaganje] p WHERE p.[Id] = v.[Id]);
-GO
+    (N'Teorijska', '2026-05-20T09:00:00', '2026-05-20T10:00:00'),
+    (N'Prakticna', '2026-05-25T08:00:00', '2026-05-25T12:00:00'),
+    (N'Teorijska', '2026-06-01T10:00:00', '2026-06-01T11:00:00')
+) AS v([Tip], [Pocetak], [Kraj])
+JOIN [Tip_obuke] t ON t.[Tip] = v.[Tip]
+WHERE NOT EXISTS (SELECT 1 FROM [Polaganje] p WHERE p.[Pocetak] = v.[Pocetak] AND p.[Kraj] = v.[Kraj]);
 
 INSERT INTO [Polaganje_kandidat] ([Polaganje_id], [Obuka_id], [Uspesno], [Broj_Poenta])
-SELECT *
+SELECT p.[Id], o.[Id], v.[Uspesno], v.[Broj_Poenta]
 FROM (VALUES
-    ('cccccccc-cccc-cccc-cccc-ccccccccccc1', '88888888-8888-8888-8888-888888888881', 1, 92),
-    ('cccccccc-cccc-cccc-cccc-ccccccccccc1', '88888888-8888-8888-8888-888888888882', 0, 63),
-    ('cccccccc-cccc-cccc-cccc-ccccccccccc2', '88888888-8888-8888-8888-888888888883', 1, 95),
-    ('cccccccc-cccc-cccc-cccc-ccccccccccc3', '88888888-8888-8888-8888-888888888884', NULL, NULL)
-) AS v([Polaganje_id], [Obuka_id], [Uspesno], [Broj_Poenta])
+    ('2026-05-20T09:00:00', '0101000710001', 1, 92),
+    ('2026-05-20T09:00:00', '1502002715002', 0, 63),
+    ('2026-05-25T08:00:00', '2303003710003', 1, 95),
+    ('2026-06-01T10:00:00', '1204004715004', NULL, NULL)
+) AS v([Pocetak_polaganja], [Kandidat_JMBG], [Uspesno], [Broj_Poenta])
+JOIN [Polaganje] p ON p.[Pocetak] = v.[Pocetak_polaganja]
+JOIN [Kandidat] k ON k.[JMBG] = v.[Kandidat_JMBG]
+JOIN [Obuka] o ON o.[Kandidat_id] = k.[Id]
 WHERE NOT EXISTS (
     SELECT 1
     FROM [Polaganje_kandidat] pk
-    WHERE pk.[Polaganje_id] = v.[Polaganje_id]
-      AND pk.[Obuka_id] = v.[Obuka_id]
+    WHERE pk.[Polaganje_id] = p.[Id]
+      AND pk.[Obuka_id] = o.[Id]
 );
-GO
 
 INSERT INTO [Nadzornici_polaganja] ([Polaganje_id], [Nadzornik_id])
-SELECT *
+SELECT p.[Id], z.[Id]
 FROM (VALUES
-    ('cccccccc-cccc-cccc-cccc-ccccccccccc1', '22222222-2222-2222-2222-222222222225'),
-    ('cccccccc-cccc-cccc-cccc-ccccccccccc1', '22222222-2222-2222-2222-222222222221'),
-    ('cccccccc-cccc-cccc-cccc-ccccccccccc2', '22222222-2222-2222-2222-222222222225'),
-    ('cccccccc-cccc-cccc-cccc-ccccccccccc3', '22222222-2222-2222-2222-222222222221')
-) AS v([Polaganje_id], [Nadzornik_id])
+    ('2026-05-20T09:00:00', '0606000710010'),
+    ('2026-05-20T09:00:00', '0202000710006'),
+    ('2026-05-25T08:00:00', '0606000710010'),
+    ('2026-06-01T10:00:00', '0202000710006')
+) AS v([Pocetak_polaganja], [Nadzornik_JMBG])
+JOIN [Polaganje] p ON p.[Pocetak] = v.[Pocetak_polaganja]
+JOIN [Zaposleni] z ON z.[JMBG] = v.[Nadzornik_JMBG]
 WHERE NOT EXISTS (
     SELECT 1
     FROM [Nadzornici_polaganja] np
-    WHERE np.[Polaganje_id] = v.[Polaganje_id]
-      AND np.[Nadzornik_id] = v.[Nadzornik_id]
+    WHERE np.[Polaganje_id] = p.[Id]
+      AND np.[Nadzornik_id] = z.[Id]
 );
-GO
 
-INSERT INTO [Cenovnik] ([Id], [Naziv], [Opis], [Cena], [Datum_od], [Datum_do])
-SELECT *
+INSERT INTO [Cenovnik] ([Naziv], [Opis], [Cena], [Datum_od], [Datum_do])
+SELECT v.[Naziv], v.[Opis], v.[Cena], v.[Datum_od], v.[Datum_do]
 FROM (VALUES
-    ('dddddddd-dddd-dddd-dddd-ddddddddddd1', N'Kompletna obuka B kategorija', N'Teorija, prakticna nastava i prijava ispita', 85000.00, '2026-01-01', NULL),
-    ('dddddddd-dddd-dddd-dddd-ddddddddddd2', N'Dodatni cas voznje', N'Jedan dodatni prakticni cas', 2500.00, '2026-01-01', NULL),
-    ('dddddddd-dddd-dddd-dddd-ddddddddddd3', N'Obuka A kategorija', N'Kompletna obuka za motocikle', 70000.00, '2026-01-01', NULL),
-    ('dddddddd-dddd-dddd-dddd-ddddddddddd4', N'Obuka C kategorija', N'Kompletna obuka za teretna vozila', 120000.00, '2026-01-01', NULL)
-) AS v([Id], [Naziv], [Opis], [Cena], [Datum_od], [Datum_do])
-WHERE NOT EXISTS (SELECT 1 FROM [Cenovnik] c WHERE c.[Id] = v.[Id]);
-GO
+    (N'Kompletna obuka B kategorija', N'Teorija, prakticna nastava i prijava ispita', 85000.00, '2026-01-01', NULL),
+    (N'Dodatni cas voznje', N'Jedan dodatni prakticni cas', 2500.00, '2026-01-01', NULL),
+    (N'Obuka A kategorija', N'Kompletna obuka za motocikle', 70000.00, '2026-01-01', NULL),
+    (N'Obuka C kategorija', N'Kompletna obuka za teretna vozila', 120000.00, '2026-01-01', NULL)
+) AS v([Naziv], [Opis], [Cena], [Datum_od], [Datum_do])
+WHERE NOT EXISTS (SELECT 1 FROM [Cenovnik] c WHERE c.[Naziv] = v.[Naziv] AND c.[Datum_od] = v.[Datum_od]);
 
-INSERT INTO [Uplata] ([Id], [Cenovnik_id], [Obuka_id], [Iznos], [Datum], [Nacin_placanja])
-SELECT *
+INSERT INTO [Uplata] ([Cenovnik_id], [Obuka_id], [Iznos], [Datum], [Nacin_placanja])
+SELECT c.[Id], o.[Id], v.[Iznos], v.[Datum], v.[Nacin_placanja]
 FROM (VALUES
-    ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeee1', 'dddddddd-dddd-dddd-dddd-ddddddddddd1', '88888888-8888-8888-8888-888888888881', 30000.00, '2026-04-05', N'Gotovina'),
-    ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeee2', 'dddddddd-dddd-dddd-dddd-ddddddddddd1', '88888888-8888-8888-8888-888888888881', 25000.00, '2026-05-05', N'Kartica'),
-    ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeee3', 'dddddddd-dddd-dddd-dddd-ddddddddddd1', '88888888-8888-8888-8888-888888888882', 85000.00, '2026-04-10', N'Prenos'),
-    ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeee4', 'dddddddd-dddd-dddd-dddd-ddddddddddd3', '88888888-8888-8888-8888-888888888883', 70000.00, '2026-03-15', N'Gotovina'),
-    ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeee5', 'dddddddd-dddd-dddd-dddd-ddddddddddd1', '88888888-8888-8888-8888-888888888884', 20000.00, '2026-05-06', N'Kartica'),
-    ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeee6', 'dddddddd-dddd-dddd-dddd-ddddddddddd4', '88888888-8888-8888-8888-888888888885', 40000.00, '2026-02-01', N'Prenos')
-) AS v([Id], [Cenovnik_id], [Obuka_id], [Iznos], [Datum], [Nacin_placanja])
-WHERE NOT EXISTS (SELECT 1 FROM [Uplata] u WHERE u.[Id] = v.[Id]);
-GO
+    (N'Kompletna obuka B kategorija', '0101000710001', 30000.00, '2026-04-05', N'Gotovina'),
+    (N'Kompletna obuka B kategorija', '0101000710001', 25000.00, '2026-05-05', N'Kartica'),
+    (N'Kompletna obuka B kategorija', '1502002715002', 85000.00, '2026-04-10', N'Prenos'),
+    (N'Obuka A kategorija', '2303003710003', 70000.00, '2026-03-15', N'Gotovina'),
+    (N'Kompletna obuka B kategorija', '1204004715004', 20000.00, '2026-05-06', N'Kartica'),
+    (N'Obuka C kategorija', '0505005710005', 40000.00, '2026-02-01', N'Prenos')
+) AS v([Naziv_cenovnika], [Kandidat_JMBG], [Iznos], [Datum], [Nacin_placanja])
+JOIN [Cenovnik] c ON c.[Naziv] = v.[Naziv_cenovnika] AND c.[Datum_do] IS NULL
+JOIN [Kandidat] k ON k.[JMBG] = v.[Kandidat_JMBG]
+JOIN [Obuka] o ON o.[Kandidat_id] = k.[Id]
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM [Uplata] u
+    WHERE u.[Cenovnik_id] = c.[Id]
+      AND u.[Obuka_id] = o.[Id]
+      AND u.[Iznos] = v.[Iznos]
+      AND u.[Datum] = v.[Datum]
+      AND u.[Nacin_placanja] = v.[Nacin_placanja]
+);
