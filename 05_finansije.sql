@@ -31,27 +31,3 @@ CREATE TABLE Uplata (
     CONSTRAINT CK_Uplata_Nacin_placanja CHECK (Nacin_placanja IN (N'Gotovina', N'Kartica', N'Prenos'))
 );
 GO
-
-EXEC sp_addextendedproperty
-@name = N'Column_Description',
-@value = 'null = trenutno aktivan',
-@level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'Cenovnik',
-@level2type = N'Column', @level2name = 'Datum_do';
-GO
-
-EXEC sp_addextendedproperty
-@name = N'Column_Description',
-@value = 'moze biti negativan - korekcija',
-@level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'Uplata',
-@level2type = N'Column', @level2name = 'Iznos';
-GO
-
-EXEC sp_addextendedproperty
-@name = N'Column_Description',
-@value = 'enum: Gotovina, Kartica, Prenos',
-@level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'Uplata',
-@level2type = N'Column', @level2name = 'Nacin_placanja';
-GO

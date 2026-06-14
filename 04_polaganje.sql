@@ -37,19 +37,3 @@ CREATE TABLE Nadzornici_polaganja (
     CONSTRAINT PK_Nadzornici_polaganja PRIMARY KEY (Polaganje_id, Nadzornik_id)
 );
 GO
-
-EXEC sp_addextendedproperty
-@name = N'Column_Description',
-@value = 'Tip polaganja je povezan sa Tip_obuke.Id; dozvoljeni tipovi su definisani u Tip_obuke.',
-@level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'Polaganje',
-@level2type = N'Column', @level2name = 'Tip_id';
-GO
-
-EXEC sp_addextendedproperty
-@name = N'Column_Description',
-@value = 'null = nije odrzano, 1 = polozio, 0 = nije polozio',
-@level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'Polaganje_kandidat',
-@level2type = N'Column', @level2name = 'Uspesno';
-GO

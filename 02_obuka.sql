@@ -65,19 +65,3 @@ CREATE TABLE Kandidat_grupa (
     CONSTRAINT CK_Kandidat_grupa_Datum CHECK (Datum_do IS NULL OR Datum_do >= Datum_od)
 );
 GO
-
-EXEC sp_addextendedproperty
-@name = N'Column_Description',
-@value = 'enum: Aktivan, Zavrsen, Prekinut',
-@level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'Obuka',
-@level2type = N'Column', @level2name = 'Status';
-GO
-
-EXEC sp_addextendedproperty
-@name = N'Column_Description',
-@value = 'CHECK: Teorijska, Prakticna, Prva Pomoc',
-@level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'Tip_obuke',
-@level2type = N'Column', @level2name = 'Tip';
-GO

@@ -75,11 +75,3 @@ CREATE TABLE Zaposleni_Funkcija (
     CONSTRAINT PK_Zaposleni_Funkcija PRIMARY KEY (Id_zaposlenog, Id_funkcije)
 );
 GO
-
-EXEC sp_addextendedproperty
-@name = N'Column_Description',
-@value = 'CHECK: BOL, GODISNJI',
-@level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'Zaposleni_Izostanak',
-@level2type = N'Column', @level2name = 'Tip';
-GO

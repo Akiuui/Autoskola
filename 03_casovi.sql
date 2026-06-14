@@ -60,35 +60,3 @@ CREATE TABLE Cas (
     )
 );
 GO
-
-EXEC sp_addextendedproperty
-@name = N'Column_Description',
-@value = 'enum: Zakazan, Odrzan, Otkazan',
-@level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'Cas',
-@level2type = N'Column', @level2name = 'Status';
-GO
-
-EXEC sp_addextendedproperty
-@name = N'Column_Description',
-@value = 'not null za Prakticni',
-@level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'Cas',
-@level2type = N'Column', @level2name = 'Obuka_id';
-GO
-
-EXEC sp_addextendedproperty
-@name = N'Column_Description',
-@value = 'not null za Prakticni',
-@level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'Cas',
-@level2type = N'Column', @level2name = 'Vozilo_id';
-GO
-
-EXEC sp_addextendedproperty
-@name = N'Column_Description',
-@value = 'not null za Teorijski',
-@level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'Cas',
-@level2type = N'Column', @level2name = 'Grupa_id';
-GO
