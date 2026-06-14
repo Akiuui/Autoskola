@@ -1,13 +1,6 @@
--- Pogledi za bazu Auto skola.
-
-
 GO
 
--- vw_Kandidati_Obuke
--- Razlog postojanja:
 -- Daje pregled kandidata i njihovih obuka na jednom mestu.
--- Bez ovog pogleda svaki izvestaj o kandidatu morao bi ponovo da spaja
--- Kandidat, Obuka, Kategorija_vozacke, Tip_obuke i Zaposleni.
 CREATE OR ALTER VIEW dbo.vw_Kandidati_Obuke
 AS
 SELECT
@@ -33,11 +26,7 @@ JOIN Tip_obuke t ON t.Id = o.Tip_Obuke
 LEFT JOIN Zaposleni z ON z.Id = o.Glavni_Instruktor_id;
 GO
 
--- vw_Raspored_Casova
--- Razlog postojanja:
--- Raspored casova je jedan od najcescih read scenarija u auto-skoli.
--- Pogled spaja cas sa instruktorom, tipom casa, obukom, kandidatom,
--- vozilom i grupom, pa se lako filtrira po datumu, instruktoru ili kandidatu.
+-- Raspored casova.
 CREATE OR ALTER VIEW dbo.vw_Raspored_Casova
 AS
 SELECT
@@ -69,10 +58,7 @@ LEFT JOIN Vozilo v ON v.Id = c.Vozilo_id
 LEFT JOIN Grupa g ON g.Id = c.Grupa_id;
 GO
 
--- vw_Uplate_Po_Obuci
 -- Razlog postojanja:
--- Finansijski pregled je potreban da bi se videlo koliko je placeno
--- po svakoj obuci. Pogled grupise uplate i daje ukupan iznos po obuci.
 CREATE OR ALTER VIEW dbo.vw_Uplate_Po_Obuci
 AS
 SELECT
@@ -100,11 +86,7 @@ GROUP BY
     o.Status;
 GO
 
--- vw_Rezultati_Polaganja
--- Razlog postojanja:
--- Rezultati polaganja se nalaze kroz vise tabela: termin polaganja,
--- prijava kandidata na polaganje, obuka, kandidat i tip polaganja.
--- Pogled daje gotov izvestaj o rezultatima.
+-- Rezultati polaganja,
 CREATE OR ALTER VIEW dbo.vw_Rezultati_Polaganja
 AS
 SELECT
@@ -132,10 +114,7 @@ JOIN Kandidat k ON k.Id = o.Kandidat_id
 JOIN Kategorija_vozacke kv ON kv.Id = o.Kategorija_id;
 GO
 
--- vw_Zaposleni_Funkcije
--- Razlog postojanja:
--- Jedan zaposleni moze imati vise funkcija. Ovaj pogled daje citljiv prikaz
--- zaposlenih i njihovih funkcija bez rucnog spajanja vezne tabele.
+-- Zaposleni i njihove funkcije
 CREATE OR ALTER VIEW dbo.vw_Zaposleni_Funkcije
 AS
 SELECT
@@ -156,10 +135,7 @@ JOIN Zaposleni z ON z.Id = zf.Id_zaposlenog
 JOIN Funkcije_Zaposlenih f ON f.Id = zf.Id_funkcije;
 GO
 
--- vw_Stanje_Obuke
--- Razlog postojanja:
--- Ovaj pogled spaja obuku sa brojem casova, brojem polaganja i ukupnim
--- uplatama. Koristan je kao kontrolni izvestaj za administraciju.
+-- Ovaj pogled spaja obuku sa brojem casova, brojem polaganja i ukupnim uplatama
 CREATE OR ALTER VIEW dbo.vw_Stanje_Obuke
 AS
 WITH Casovi AS (
