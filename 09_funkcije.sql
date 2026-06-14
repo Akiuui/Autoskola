@@ -1,14 +1,6 @@
--- Funkcije za bazu Auto skola.
---
--- Razlog za ovaj fajl:
--- Funkcije izdvajaju proracune koji se ponavljaju u vise upita.
--- One ne menjaju podatke, vec vracaju izracunate vrednosti ili skup redova.
--- Time se smanjuje ponavljanje logike u pogledima, procedurama i izvestajima.
-
 GO
 
 -- fn_UkupnoUplacenoZaObuku
--- Razlog postojanja:
 -- Cesto je potrebno znati koliko je ukupno placeno za jednu obuku.
 -- Ova funkcija sabira sve uplate za zadatu obuku.
 CREATE OR ALTER FUNCTION dbo.fn_UkupnoUplacenoZaObuku
@@ -29,8 +21,7 @@ END;
 GO
 
 -- fn_BrojCasovaZaObuku
--- Razlog postojanja:
--- Za pracenje napretka kandidata vazno je znati koliko casova ima obuka.
+-- Za pracenje napretka kandidata vazno je znati koliko je casova ima obuka.
 -- Parametar @Samo_odrzani omogucava da se broje svi casovi ili samo odrzani.
 CREATE OR ALTER FUNCTION dbo.fn_BrojCasovaZaObuku
 (
@@ -52,7 +43,6 @@ END;
 GO
 
 -- fn_BrojPolaganjaZaObuku
--- Razlog postojanja:
 -- Obuka moze imati vise pokusaja polaganja. Ova funkcija vraca koliko puta
 -- je konkretna obuka prijavljena na polaganje.
 CREATE OR ALTER FUNCTION dbo.fn_BrojPolaganjaZaObuku
@@ -73,8 +63,7 @@ END;
 GO
 
 -- fn_KandidatImaAktivnuObuku
--- Razlog postojanja:
--- Koristi se kao poslovna provera pre upisa kandidata na novu obuku.
+-- Koristi se kao provera pre upisa kandidata na novu obuku.
 -- Za istog kandidata i kategoriju ne zelimo paralelnu aktivnu obuku.
 CREATE OR ALTER FUNCTION dbo.fn_KandidatImaAktivnuObuku
 (
@@ -102,10 +91,8 @@ END;
 GO
 
 -- fn_RasporedInstruktora
--- Razlog postojanja:
 -- Ovo je tabelarna funkcija za prikaz rasporeda jednog instruktora
--- u zadatom periodu. Korisna je za aplikaciju ili izvestaj kada se
--- instruktor i period prosledjuju kao parametri.
+-- u zadatom periodu.
 CREATE OR ALTER FUNCTION dbo.fn_RasporedInstruktora
 (
     @Instruktor_id UNIQUEIDENTIFIER,
