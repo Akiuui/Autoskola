@@ -1,20 +1,7 @@
--- Procedure za bazu Auto skola.
---
--- Razlog za ovaj fajl:
--- Procedure predstavljaju poslovne operacije nad bazom.
--- Za razliku od obicnog INSERT/UPDATE upita, procedura moze da proveri
--- poslovna pravila, pokrene transakciju i obezbedi da se promena izvrsi
--- kompletno ili da se u potpunosti ponisti.
---
--- Napomena:
--- Koristi se prefiks usp umesto sp, jer SQL Server za sistemske procedure
--- koristi sp prefiks.
-
 GO
 
 -- usp_UpisKandidataNaObuku
--- Razlog postojanja:
--- Upis kandidata na obuku je poslovna operacija, a ne samo prost INSERT.
+-- Upis kandidata na obuku je citava operacija, a ne samo prost INSERT.
 -- Mora da proveri da kandidat, kategorija, tip obuke i instruktor postoje,
 -- kao i da kandidat nema vec aktivnu obuku za istu kategoriju.
 -- Ako se prosledi grupa, kandidat se odmah povezuje i sa grupom.
@@ -28,7 +15,6 @@ CREATE OR ALTER PROCEDURE dbo.usp_UpisKandidataNaObuku
     @Nova_Obuka_id UNIQUEIDENTIFIER OUTPUT
 AS
 BEGIN
-    SET NOCOUNT ON;
     SET XACT_ABORT ON;
 
     BEGIN TRY
@@ -83,7 +69,6 @@ END;
 GO
 
 -- usp_ZakaziPrakticniCas
--- Razlog postojanja:
 -- Zakazivanje prakticnog casa mora da proveri da obuka, instruktor i vozilo
 -- postoje, da vreme ima smisla i da instruktor ili vozilo nisu zauzeti.
 -- Zato se koristi transakcija i poslovne provere pre unosa casa.
@@ -98,7 +83,6 @@ CREATE OR ALTER PROCEDURE dbo.usp_ZakaziPrakticniCas
     @Novi_Cas_id UNIQUEIDENTIFIER OUTPUT
 AS
 BEGIN
-    SET NOCOUNT ON;
     SET XACT_ABORT ON;
 
     DECLARE @Tip_id UNIQUEIDENTIFIER;
@@ -171,7 +155,6 @@ END;
 GO
 
 -- usp_EvidentirajUplatu
--- Razlog postojanja:
 -- Evidentiranje uplate je finansijska operacija. Procedura proverava
 -- da obuka i cenovnik postoje i da je nacin placanja dozvoljen.
 CREATE OR ALTER PROCEDURE dbo.usp_EvidentirajUplatu
@@ -223,7 +206,6 @@ END;
 GO
 
 -- usp_PrijaviKandidataNaPolaganje
--- Razlog postojanja:
 -- Prijava kandidata na polaganje se cuva u tabeli Polaganje_kandidat.
 -- Procedura proverava da polaganje i obuka postoje i sprecava duplu prijavu.
 CREATE OR ALTER PROCEDURE dbo.usp_PrijaviKandidataNaPolaganje
@@ -270,7 +252,6 @@ END;
 GO
 
 -- usp_EvidentirajRezultatPolaganja
--- Razlog postojanja:
 -- Rezultat polaganja mora da azurira postojecu prijavu kandidata.
 -- Procedura proverava opseg poena i cuva rezultat kao jednu transakciju.
 CREATE OR ALTER PROCEDURE dbo.usp_EvidentirajRezultatPolaganja
