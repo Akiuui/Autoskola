@@ -1,6 +1,6 @@
 GO
 
--- Daje pregled kandidata i njihovih obuka na jednom mestu.
+-- Pregled kandidata i njihovih obuka.
 CREATE OR ALTER VIEW dbo.vw_Kandidati_Obuke
 AS
 SELECT
@@ -26,7 +26,7 @@ JOIN Tip_obuke t ON t.Id = o.Tip_Obuke
 LEFT JOIN Zaposleni z ON z.Id = o.Glavni_Instruktor_id;
 GO
 
--- Raspored casova.
+-- Pregled rasporeda casova.
 CREATE OR ALTER VIEW dbo.vw_Raspored_Casova
 AS
 SELECT
@@ -58,7 +58,7 @@ LEFT JOIN Vozilo v ON v.Id = c.Vozilo_id
 LEFT JOIN Grupa g ON g.Id = c.Grupa_id;
 GO
 
---Uplate po obuci
+-- Pregled uplata po obuci.
 CREATE OR ALTER VIEW dbo.vw_Uplate_Po_Obuci
 AS
 SELECT
@@ -86,7 +86,7 @@ GROUP BY
     o.Status;
 GO
 
--- Rezultati polaganja,
+-- Pregled rezultata polaganja.
 CREATE OR ALTER VIEW dbo.vw_Rezultati_Polaganja
 AS
 SELECT
@@ -114,7 +114,7 @@ JOIN Kandidat k ON k.Id = o.Kandidat_id
 JOIN Kategorija_vozacke kv ON kv.Id = o.Kategorija_id;
 GO
 
--- Zaposleni i njihove funkcije
+-- Pregled zaposlenih i njihovih funkcija.
 CREATE OR ALTER VIEW dbo.vw_Zaposleni_Funkcije
 AS
 SELECT
@@ -135,7 +135,7 @@ JOIN Zaposleni z ON z.Id = zf.Id_zaposlenog
 JOIN Funkcije_Zaposlenih f ON f.Id = zf.Id_funkcije;
 GO
 
--- Ovaj pogled spaja obuku sa brojem casova, brojem polaganja i ukupnim uplatama
+-- Pregled stanja obuke kroz casove, polaganja i uplate.
 CREATE OR ALTER VIEW dbo.vw_Stanje_Obuke
 AS
 WITH Casovi AS (

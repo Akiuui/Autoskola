@@ -1,6 +1,5 @@
 GO
--- Sledecih 7 trigera se bave poljima: Izmenjen_datum. Ovo polje 
--- postoji na vaznijim tabelama radi bolje evidencije.
+-- Triggeri za automatsko azuriranje Izmenjen_datum.
 CREATE OR ALTER TRIGGER dbo.trg_Kandidat_SetIzmenjenDatum
 ON dbo.Kandidat
 AFTER UPDATE
@@ -106,7 +105,7 @@ BEGIN
 END;
 GO
 
--- U finansijama se uplate ne brisu fizicki, jer je potreban trag.
+-- Zabrana fizickog brisanja uplata.
 CREATE OR ALTER TRIGGER dbo.trg_Uplata_ZabraniBrisanje
 ON dbo.Uplata
 INSTEAD OF DELETE
@@ -117,7 +116,7 @@ END;
 
 GO
 
--- Kilometraza vozila sme da raste, ali ne sme da se smanji.
+-- Zabrana smanjenja kilometraze vozila.
 CREATE OR ALTER TRIGGER dbo.trg_Vozilo_Kilometraza_NeSmanjuje
 ON dbo.Vozilo
 AFTER UPDATE
@@ -136,7 +135,7 @@ BEGIN
 END;
 GO
 
--- Kada se cas oznaci kao odrzan, vozilu se automatski povecava kilometraza.
+-- Povecanje kilometraze posle odrzanog casa.
 CREATE OR ALTER TRIGGER dbo.trg_Cas_Odrzan_PovecajKilometrazu
 ON dbo.Cas
 AFTER UPDATE
