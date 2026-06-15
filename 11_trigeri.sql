@@ -1,8 +1,7 @@
 GO
-
+-- Sledecih 7 trigera se bave poljima: Izmenjen_datum. Ovo polje 
+-- postoji na vaznijim tabelama radi bolje evidencije.
 -- trg_Kandidat_SetIzmenjenDatum
--- Razlog postojanja:
--- Kada se promene podaci kandidata, baza sama pamti vreme poslednje izmene.
 CREATE OR ALTER TRIGGER dbo.trg_Kandidat_SetIzmenjenDatum
 ON dbo.Kandidat
 AFTER UPDATE
@@ -19,8 +18,6 @@ END;
 GO
 
 -- trg_Zaposleni_SetIzmenjenDatum
--- Razlog postojanja:
--- Kada se promene podaci zaposlenog, baza sama pamti vreme poslednje izmene.
 CREATE OR ALTER TRIGGER dbo.trg_Zaposleni_SetIzmenjenDatum
 ON dbo.Zaposleni
 AFTER UPDATE
@@ -37,9 +34,6 @@ END;
 GO
 
 -- trg_Obuka_SetIzmenjenDatum
--- Razlog postojanja:
--- Obuka se menja tokom vremena: status, instruktor ili datum zavrsetka.
--- Trigger automatski belezi kada je obuka poslednji put izmenjena.
 CREATE OR ALTER TRIGGER dbo.trg_Obuka_SetIzmenjenDatum
 ON dbo.Obuka
 AFTER UPDATE
@@ -56,9 +50,6 @@ END;
 GO
 
 -- trg_Vozilo_SetIzmenjenDatum
--- Razlog postojanja:
--- Za vozila je korisno znati kada su poslednji put promenjeni podaci,
--- na primer kilometraza ili datum registracije.
 CREATE OR ALTER TRIGGER dbo.trg_Vozilo_SetIzmenjenDatum
 ON dbo.Vozilo
 AFTER UPDATE
@@ -75,9 +66,6 @@ END;
 GO
 
 -- trg_Cas_SetIzmenjenDatum
--- Razlog postojanja:
--- Casovi se mogu pomerati, otkazivati ili oznacavati kao odrzani.
--- Trigger automatski belezi poslednju izmenu casa.
 CREATE OR ALTER TRIGGER dbo.trg_Cas_SetIzmenjenDatum
 ON dbo.Cas
 AFTER UPDATE
@@ -94,8 +82,6 @@ END;
 GO
 
 -- trg_Polaganje_SetIzmenjenDatum
--- Razlog postojanja:
--- Ako se promeni termin polaganja, baza automatski cuva vreme izmene.
 CREATE OR ALTER TRIGGER dbo.trg_Polaganje_SetIzmenjenDatum
 ON dbo.Polaganje
 AFTER UPDATE
@@ -112,9 +98,6 @@ END;
 GO
 
 -- trg_Uplata_SetIzmenjenDatum
--- Razlog postojanja:
--- Finansijski podaci su osetljivi. Ako se uplata ispravi, baza pamti
--- kada je poslednji put menjana.
 CREATE OR ALTER TRIGGER dbo.trg_Uplata_SetIzmenjenDatum
 ON dbo.Uplata
 AFTER UPDATE
