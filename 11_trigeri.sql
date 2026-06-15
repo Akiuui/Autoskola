@@ -114,6 +114,7 @@ AS
 BEGIN
     THROW 51001, 'Uplate se ne brisu. Za ispravku unesite korektivnu negativnu uplatu.', 1;
 END;
+
 GO
 
 -- Kilometraza vozila sme da raste, ali ne sme da se smanji.
@@ -133,5 +134,24 @@ BEGIN
     )
         THROW 51002, 'Kilometraza vozila ne sme da se smanji.', 1;
 END;
+GO
 
+-- Kada se cas oznaci kao odrzan, vozilu se automatski povecava kilometraza.
+CREATE OR ALTER TRIGGER dbo.trg_Cas_Odrzan_PovecajKilometrazu
+ON dbo.Cas
+AFTER UPDATE
+AS
+BEGIN
+    IF NOT UPDATE(Status)
+        RETURN;
+
+    UPDATE v
+    SET Kilometraza = v.Kilometraza + 10
+    FROM Vozilo v
+    JOIN inserted i ON i.Vozilo_id = v.Id
+    JOIN deleted d ON d.Id = i.Id
+    WHERE i.Status = N'Odrzan'
+      AND d.Status <> N'Odrzan'
+      AND i.Vozilo_id IS NOT NULL;
+END;
 GO
