@@ -58,7 +58,7 @@ LEFT JOIN Vozilo v ON v.Id = c.Vozilo_id
 LEFT JOIN Grupa g ON g.Id = c.Grupa_id;
 GO
 
--- Razlog postojanja:
+--Uplate po obuci
 CREATE OR ALTER VIEW dbo.vw_Uplate_Po_Obuci
 AS
 SELECT

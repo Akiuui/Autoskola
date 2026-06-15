@@ -1,6 +1,5 @@
 GO
 
--- usp_UpisKandidataNaObuku
 -- Upis kandidata na obuku je citava operacija, a ne samo prost INSERT.
 -- Mora da proveri da kandidat, kategorija, tip obuke i instruktor postoje,
 -- kao i da kandidat nema vec aktivnu obuku za istu kategoriju.
@@ -68,7 +67,6 @@ BEGIN
 END;
 GO
 
--- usp_ZakaziPrakticniCas
 -- Zakazivanje prakticnog casa mora da proveri da obuka, instruktor i vozilo
 -- postoje, da vreme ima smisla i da instruktor ili vozilo nisu zauzeti.
 CREATE OR ALTER PROCEDURE dbo.usp_ZakaziPrakticniCas
@@ -153,7 +151,6 @@ BEGIN
 END;
 GO
 
--- usp_EvidentirajUplatu
 -- Procedura proverava da obuka i cenovnik postoje i da je nacin placanja dozvoljen.
 CREATE OR ALTER PROCEDURE dbo.usp_EvidentirajUplatu
     @Obuka_id UNIQUEIDENTIFIER,
@@ -202,7 +199,6 @@ BEGIN
 END;
 GO
 
--- usp_PrijaviKandidataNaPolaganje
 -- Procedura proverava da polaganje i obuka postoje i sprecava duplu prijavu.
 CREATE OR ALTER PROCEDURE dbo.usp_PrijaviKandidataNaPolaganje
     @Polaganje_id UNIQUEIDENTIFIER,
@@ -246,7 +242,6 @@ BEGIN
 END;
 GO
 
--- usp_EvidentirajRezultatPolaganja
 -- Procedura proverava opseg poena i cuva rezultat kao jednu transakciju.
 CREATE OR ALTER PROCEDURE dbo.usp_EvidentirajRezultatPolaganja
     @Polaganje_id UNIQUEIDENTIFIER,

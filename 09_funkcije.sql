@@ -1,6 +1,5 @@
 GO
 
--- fn_UkupnoUplacenoZaObuku
 -- Cesto je potrebno znati koliko je ukupno placeno za jednu obuku.
 -- Ova funkcija sabira sve uplate za zadatu obuku.
 CREATE OR ALTER FUNCTION dbo.fn_UkupnoUplacenoZaObuku
@@ -20,7 +19,6 @@ BEGIN
 END;
 GO
 
--- fn_BrojCasovaZaObuku
 -- Za pracenje napretka kandidata vazno je znati koliko je casova ima obuka.
 -- Parametar @Samo_odrzani omogucava da se broje svi casovi ili samo odrzani.
 CREATE OR ALTER FUNCTION dbo.fn_BrojCasovaZaObuku
@@ -42,7 +40,6 @@ BEGIN
 END;
 GO
 
--- fn_BrojPolaganjaZaObuku
 -- Obuka moze imati vise pokusaja polaganja. Ova funkcija vraca koliko puta
 -- je konkretna obuka prijavljena na polaganje.
 CREATE OR ALTER FUNCTION dbo.fn_BrojPolaganjaZaObuku
@@ -62,7 +59,6 @@ BEGIN
 END;
 GO
 
--- fn_KandidatImaAktivnuObuku
 -- Koristi se kao provera pre upisa kandidata na novu obuku.
 -- Za istog kandidata i kategoriju ne zelimo paralelnu aktivnu obuku.
 CREATE OR ALTER FUNCTION dbo.fn_KandidatImaAktivnuObuku
@@ -90,7 +86,6 @@ BEGIN
 END;
 GO
 
--- fn_RasporedInstruktora
 -- Ovo je tabelarna funkcija za prikaz rasporeda jednog instruktora
 -- u zadatom periodu.
 CREATE OR ALTER FUNCTION dbo.fn_RasporedInstruktora

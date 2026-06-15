@@ -179,9 +179,7 @@ Triggeri:
 - `trg_Polaganje_SetIzmenjenDatum`
 - `trg_Uplata_SetIzmenjenDatum`
 - `trg_Uplata_ZabraniBrisanje`
-- `trg_Obuka_Status_DatumZavrsetka`: uskladjuje status obuke i datum zavrsetka.
-- `trg_Obuka_ZatvoriKandidatGrupe`: zatvara clanstvo kandidata u grupi kada se obuka zavrsi ili prekine.
-- `trg_PolaganjeKandidat_Uspesno_ZavrsiObuku`: zavrsava obuku kada kandidat uspesno polozi.
+- `trg_Vozilo_Kilometraza_NeSmanjuje`: sprecava smanjenje kilometraze vozila.
 - `trg_Cas_Odrzan_PovecajKilometrazu`: povecava kilometrazu vozila kada se cas oznaci kao odrzan.
 
 Indeksi:
