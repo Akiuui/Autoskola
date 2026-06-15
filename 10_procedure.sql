@@ -71,7 +71,6 @@ GO
 -- usp_ZakaziPrakticniCas
 -- Zakazivanje prakticnog casa mora da proveri da obuka, instruktor i vozilo
 -- postoje, da vreme ima smisla i da instruktor ili vozilo nisu zauzeti.
--- Zato se koristi transakcija i poslovne provere pre unosa casa.
 CREATE OR ALTER PROCEDURE dbo.usp_ZakaziPrakticniCas
     @Obuka_id UNIQUEIDENTIFIER,
     @Instruktor_id UNIQUEIDENTIFIER,
@@ -155,8 +154,7 @@ END;
 GO
 
 -- usp_EvidentirajUplatu
--- Evidentiranje uplate je finansijska operacija. Procedura proverava
--- da obuka i cenovnik postoje i da je nacin placanja dozvoljen.
+-- Procedura proverava da obuka i cenovnik postoje i da je nacin placanja dozvoljen.
 CREATE OR ALTER PROCEDURE dbo.usp_EvidentirajUplatu
     @Obuka_id UNIQUEIDENTIFIER,
     @Cenovnik_id UNIQUEIDENTIFIER,
@@ -166,7 +164,6 @@ CREATE OR ALTER PROCEDURE dbo.usp_EvidentirajUplatu
     @Nova_Uplata_id UNIQUEIDENTIFIER OUTPUT
 AS
 BEGIN
-    SET NOCOUNT ON;
     SET XACT_ABORT ON;
 
     BEGIN TRY
@@ -206,14 +203,12 @@ END;
 GO
 
 -- usp_PrijaviKandidataNaPolaganje
--- Prijava kandidata na polaganje se cuva u tabeli Polaganje_kandidat.
 -- Procedura proverava da polaganje i obuka postoje i sprecava duplu prijavu.
 CREATE OR ALTER PROCEDURE dbo.usp_PrijaviKandidataNaPolaganje
     @Polaganje_id UNIQUEIDENTIFIER,
     @Obuka_id UNIQUEIDENTIFIER
 AS
 BEGIN
-    SET NOCOUNT ON;
     SET XACT_ABORT ON;
 
     BEGIN TRY
@@ -252,7 +247,6 @@ END;
 GO
 
 -- usp_EvidentirajRezultatPolaganja
--- Rezultat polaganja mora da azurira postojecu prijavu kandidata.
 -- Procedura proverava opseg poena i cuva rezultat kao jednu transakciju.
 CREATE OR ALTER PROCEDURE dbo.usp_EvidentirajRezultatPolaganja
     @Polaganje_id UNIQUEIDENTIFIER,

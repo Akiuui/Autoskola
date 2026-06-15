@@ -1,15 +1,3 @@
--- Triggeri za bazu Auto skola.
---
--- Razlog za ovaj fajl:
--- Triggeri se koriste za automatske reakcije baze na promene podataka.
--- Ovde su izabrani triggeri koji imaju jasnu i ogranicenu svrhu:
--- automatsko azuriranje kolone Izmenjen_datum.
---
--- Zasto bas ovi triggeri:
--- Vise tabela vec ima kolonu Izmenjen_datum. Bez triggera bi svaka aplikacija
--- ili svaki rucni UPDATE morao sam da postavlja datum izmene.
--- Trigger centralizuje to pravilo u bazi.
-
 GO
 
 -- trg_Kandidat_SetIzmenjenDatum
@@ -20,8 +8,6 @@ ON dbo.Kandidat
 AFTER UPDATE
 AS
 BEGIN
-    SET NOCOUNT ON;
-
     IF UPDATE(Izmenjen_datum)
         RETURN;
 
@@ -40,8 +26,6 @@ ON dbo.Zaposleni
 AFTER UPDATE
 AS
 BEGIN
-    SET NOCOUNT ON;
-
     IF UPDATE(Izmenjen_datum)
         RETURN;
 
@@ -61,8 +45,6 @@ ON dbo.Obuka
 AFTER UPDATE
 AS
 BEGIN
-    SET NOCOUNT ON;
-
     IF UPDATE(Izmenjen_datum)
         RETURN;
 
@@ -82,8 +64,6 @@ ON dbo.Vozilo
 AFTER UPDATE
 AS
 BEGIN
-    SET NOCOUNT ON;
-
     IF UPDATE(Izmenjen_datum)
         RETURN;
 
@@ -103,8 +83,6 @@ ON dbo.Cas
 AFTER UPDATE
 AS
 BEGIN
-    SET NOCOUNT ON;
-
     IF UPDATE(Izmenjen_datum)
         RETURN;
 
@@ -123,8 +101,6 @@ ON dbo.Polaganje
 AFTER UPDATE
 AS
 BEGIN
-    SET NOCOUNT ON;
-
     IF UPDATE(Izmenjen_datum)
         RETURN;
 
@@ -144,8 +120,6 @@ ON dbo.Uplata
 AFTER UPDATE
 AS
 BEGIN
-    SET NOCOUNT ON;
-
     IF UPDATE(Izmenjen_datum)
         RETURN;
 
@@ -157,17 +131,12 @@ END;
 GO
 
 -- trg_Uplata_ZabraniBrisanje
--- Razlog postojanja:
--- U finansijama se uplate obicno ne brisu fizicki, jer je potreban trag.
--- Ako je napravljena greska, unosi se korektivna negativna uplata,
--- sto je vec dozvoljeno CHECK constraintom nad kolonom Iznos.
+-- U finansijama se uplate ne brisu fizicki, jer je potreban trag.
 CREATE OR ALTER TRIGGER dbo.trg_Uplata_ZabraniBrisanje
 ON dbo.Uplata
 INSTEAD OF DELETE
 AS
 BEGIN
-    SET NOCOUNT ON;
-
     THROW 51001, 'Uplate se ne brisu. Za ispravku unesite korektivnu negativnu uplatu.', 1;
 END;
 GO
