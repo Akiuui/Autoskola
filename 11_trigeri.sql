@@ -1,7 +1,6 @@
 GO
 -- Sledecih 7 trigera se bave poljima: Izmenjen_datum. Ovo polje 
 -- postoji na vaznijim tabelama radi bolje evidencije.
--- trg_Kandidat_SetIzmenjenDatum
 CREATE OR ALTER TRIGGER dbo.trg_Kandidat_SetIzmenjenDatum
 ON dbo.Kandidat
 AFTER UPDATE
@@ -17,7 +16,6 @@ BEGIN
 END;
 GO
 
--- trg_Zaposleni_SetIzmenjenDatum
 CREATE OR ALTER TRIGGER dbo.trg_Zaposleni_SetIzmenjenDatum
 ON dbo.Zaposleni
 AFTER UPDATE
@@ -33,7 +31,6 @@ BEGIN
 END;
 GO
 
--- trg_Obuka_SetIzmenjenDatum
 CREATE OR ALTER TRIGGER dbo.trg_Obuka_SetIzmenjenDatum
 ON dbo.Obuka
 AFTER UPDATE
@@ -49,7 +46,6 @@ BEGIN
 END;
 GO
 
--- trg_Vozilo_SetIzmenjenDatum
 CREATE OR ALTER TRIGGER dbo.trg_Vozilo_SetIzmenjenDatum
 ON dbo.Vozilo
 AFTER UPDATE
@@ -65,7 +61,6 @@ BEGIN
 END;
 GO
 
--- trg_Cas_SetIzmenjenDatum
 CREATE OR ALTER TRIGGER dbo.trg_Cas_SetIzmenjenDatum
 ON dbo.Cas
 AFTER UPDATE
@@ -81,7 +76,6 @@ BEGIN
 END;
 GO
 
--- trg_Polaganje_SetIzmenjenDatum
 CREATE OR ALTER TRIGGER dbo.trg_Polaganje_SetIzmenjenDatum
 ON dbo.Polaganje
 AFTER UPDATE
@@ -97,7 +91,6 @@ BEGIN
 END;
 GO
 
--- trg_Uplata_SetIzmenjenDatum
 CREATE OR ALTER TRIGGER dbo.trg_Uplata_SetIzmenjenDatum
 ON dbo.Uplata
 AFTER UPDATE
@@ -113,7 +106,6 @@ BEGIN
 END;
 GO
 
--- trg_Uplata_ZabraniBrisanje
 -- U finansijama se uplate ne brisu fizicki, jer je potreban trag.
 CREATE OR ALTER TRIGGER dbo.trg_Uplata_ZabraniBrisanje
 ON dbo.Uplata
@@ -122,4 +114,24 @@ AS
 BEGIN
     THROW 51001, 'Uplate se ne brisu. Za ispravku unesite korektivnu negativnu uplatu.', 1;
 END;
+GO
+
+-- Kilometraza vozila sme da raste, ali ne sme da se smanji.
+CREATE OR ALTER TRIGGER dbo.trg_Vozilo_Kilometraza_NeSmanjuje
+ON dbo.Vozilo
+AFTER UPDATE
+AS
+BEGIN
+    IF NOT UPDATE(Kilometraza)
+        RETURN;
+
+    IF EXISTS (
+        SELECT 1
+        FROM inserted i
+        JOIN deleted d ON d.Id = i.Id
+        WHERE i.Kilometraza < d.Kilometraza
+    )
+        THROW 51002, 'Kilometraza vozila ne sme da se smanji.', 1;
+END;
+
 GO
