@@ -28,8 +28,8 @@ CREATE TABLE Cas (
     Tip_id UNIQUEIDENTIFIER NOT NULL REFERENCES Tip_obuke (Id),
     Lokacija NVARCHAR(200),
     Datum DATE NOT NULL,
-    Pocetak DATETIME2 NOT NULL,
-    Kraj DATETIME2 NOT NULL,
+    Pocetak TIME NOT NULL,
+    Kraj TIME NOT NULL,
     Status NVARCHAR(20) NOT NULL
         CONSTRAINT DF_Cas_Status DEFAULT (N'Zakazan'),
     Obuka_id UNIQUEIDENTIFIER REFERENCES Obuka (Id),
@@ -42,8 +42,6 @@ CREATE TABLE Cas (
     CONSTRAINT CK_Cas_Status CHECK (Status IN (N'Zakazan', N'Odrzan', N'Otkazan')),
     -- Vreme zavrsetka casa mora biti posle vremena pocetka.
     CONSTRAINT CK_Cas_Vreme CHECK (Kraj > Pocetak),
-    -- Datum casa mora odgovarati datumima pocetka i kraja casa.
-    CONSTRAINT CK_Cas_Datum_Pocetak CHECK (CONVERT(date, Pocetak) = Datum AND CONVERT(date, Kraj) = Datum),
     -- Prakticni cas ima obuku i vozilo, a teorijski cas ima samo grupu.
     CONSTRAINT CK_Cas_Tip_Polja CHECK (
         (

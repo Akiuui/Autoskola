@@ -136,8 +136,8 @@ BEGIN TRY
         @Instruktor_id = @InstruktorId,
         @Vozilo_id = @VoziloId,
         @Datum = '2029-01-11',
-        @Pocetak = '2029-01-11T09:00:00',
-        @Kraj = '2029-01-11T09:45:00',
+        @Pocetak = '09:00:00',
+        @Kraj = '09:45:00',
         @Lokacija = N'Demo lokacija',
         @Novi_Cas_id = @NoviCasId OUTPUT;
 

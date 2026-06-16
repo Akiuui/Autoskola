@@ -169,11 +169,11 @@ INSERT INTO Cas (
 SELECT z.Id, t.Id, v.Lokacija, v.Datum, v.Pocetak, v.Kraj, v.Status,
        o.Id, voz.Id, g.Id
 FROM (VALUES
-    ('0606000710010', N'Teorijska', N'Ucionica 1', '2026-05-06', '2026-05-06T17:00:00', '2026-05-06T18:30:00', N'Odrzan', NULL, NULL, '2026-05-01'),
-    ('0303000710007', N'Prakticna', N'Poligon Novi Beograd', '2026-05-07', '2026-05-07T09:00:00', '2026-05-07T10:30:00', N'Odrzan', '0101000710001', 'BG-123-AA', NULL),
-    ('0404000710008', N'Prakticna', N'Gradska voznja', '2026-05-08', '2026-05-08T11:00:00', '2026-05-08T12:30:00', N'Odrzan', '1502002715002', 'NS-456-BB', NULL),
-    ('0404000710008', N'Prakticna', N'Poligon', '2026-05-09', '2026-05-09T13:00:00', '2026-05-09T14:30:00', N'Otkazan', '2303003710003', 'BG-789-CC', NULL),
-    ('0606000710010', N'Prva Pomoc', N'Ucionica prve pomoci', '2026-05-10', '2026-05-10T16:00:00', '2026-05-10T18:00:00', N'Zakazan', NULL, NULL, '2026-04-01')
+    ('0606000710010', N'Teorijska', N'Ucionica 1', '2026-05-06', '17:00:00', '18:30:00', N'Odrzan', NULL, NULL, '2026-05-01'),
+    ('0303000710007', N'Prakticna', N'Poligon Novi Beograd', '2026-05-07', '09:00:00', '10:30:00', N'Odrzan', '0101000710001', 'BG-123-AA', NULL),
+    ('0404000710008', N'Prakticna', N'Gradska voznja', '2026-05-08', '11:00:00', '12:30:00', N'Odrzan', '1502002715002', 'NS-456-BB', NULL),
+    ('0404000710008', N'Prakticna', N'Poligon', '2026-05-09', '13:00:00', '14:30:00', N'Otkazan', '2303003710003', 'BG-789-CC', NULL),
+    ('0606000710010', N'Prva Pomoc', N'Ucionica prve pomoci', '2026-05-10', '16:00:00', '18:00:00', N'Zakazan', NULL, NULL, '2026-04-01')
 ) AS v(Instruktor_JMBG, Tip, Lokacija, Datum, Pocetak, Kraj, Status, Kandidat_JMBG, Registracija, Datum_kreiranja_grupe)
 JOIN Zaposleni z ON z.JMBG = v.Instruktor_JMBG
 JOIN Tip_obuke t ON t.Tip = v.Tip
@@ -185,6 +185,7 @@ WHERE NOT EXISTS (
     SELECT 1
     FROM Cas c
     WHERE c.Instruktor_id = z.Id
+      AND c.Datum = v.Datum
       AND c.Pocetak = v.Pocetak
       AND c.Kraj = v.Kraj
 );
@@ -611,7 +612,7 @@ DodatniCasovi AS (
         voz.Id AS Vozilo_id,
         b.n,
         DATEADD(day, b.n, CONVERT(date, '2026-06-01')) AS Datum,
-        DATEADD(hour, 8 + (b.n % 8), CONVERT(datetime2, DATEADD(day, b.n, CONVERT(date, '2026-06-01')))) AS Pocetak
+        CONVERT(time, DATEADD(hour, 8 + (b.n % 8), CONVERT(time, '00:00:00'))) AS Pocetak
     FROM Obuka o
     CROSS JOIN Brojevi b
     JOIN Tip_obuke t ON t.Tip = N'Prakticna'
@@ -643,6 +644,7 @@ WHERE NOT EXISTS (
     SELECT 1
     FROM Cas c
     WHERE c.Obuka_id = dc.Obuka_id
+      AND c.Datum = dc.Datum
       AND c.Pocetak = dc.Pocetak
       AND c.Kraj = DATEADD(minute, 45, dc.Pocetak)
 );

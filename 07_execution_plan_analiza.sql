@@ -1,26 +1,9 @@
--- Analiza najcescih read upita i izbor indeksa.
---
--- Nacin koriscenja u SSMS-u:
--- 1. Pokrenuti 00_master.sql i 06_test_podaci.sql.
--- 2. Ukljuciti Actual Execution Plan: Ctrl + M.
--- 3. Pokrenuti ovaj fajl PRE kreiranja dodatnih indeksa.
--- 4. Zapisati operacije iz plana izvrsavanja i vrednosti logical reads / CPU time.
--- 5. Kreirati predlozene indekse.
--- 6. Ponovo pokrenuti iste upite i uporediti rezultate.
---
--- Svaki upit je nezavisan i ne koristi promenljive.
-
-SET STATISTICS IO ON;
-SET STATISTICS TIME ON;
 GO
 
 -- 1. Casovi po instruktoru i datumu
--- Poslovno pitanje: koji raspored ima instruktor u zadatom periodu?
--- Kolone za indeks: Cas(Instruktor_id, Datum), jer su obe u WHERE uslovu.
--- Predlog indeksa:
--- CREATE INDEX IX_Cas_Instruktor_Datum ON Cas (Instruktor_id, Datum);
+-- CREATE INDEX IX_Cas_Instruktor_Datum_Pocetak ON Cas (Instruktor_id, Datum, Pocetak);
 -- Brisanje indeksa za ponovno testiranje:
--- DROP INDEX IF EXISTS IX_Cas_Instruktor_Datum ON Cas;
+-- DROP INDEX IF EXISTS IX_Cas_Instruktor_Datum_Pocetak ON Cas;
 SELECT
     c.Id,
     c.Datum,
@@ -36,14 +19,16 @@ JOIN Zaposleni z ON z.Id = c.Instruktor_id
 WHERE z.JMBG = '0404000710008'
   AND c.Datum BETWEEN '2026-06-01' AND '2026-07-31'
 ORDER BY c.Datum, c.Pocetak;
+-- Kolone za indeks: Cas(Instruktor_id, Datum, Pocetak)
+
 
 -- 2. Casovi po obuci
 -- Poslovno pitanje: koje casove je kandidat imao u okviru konkretne obuke?
--- Kolone za indeks: Cas(Obuka_id, Datum), jer se filtrira po obuci i sortira po datumu.
+-- Kolone za indeks: Cas(Obuka_id, Datum, Pocetak), jer se filtrira po obuci i sortira po datumu i vremenu.
 -- Predlog indeksa:
--- CREATE INDEX IX_Cas_Obuka_Datum ON Cas (Obuka_id, Datum);
+-- CREATE INDEX IX_Cas_Obuka_Datum_Pocetak ON Cas (Obuka_id, Datum, Pocetak);
 -- Brisanje indeksa za ponovno testiranje:
--- DROP INDEX IF EXISTS IX_Cas_Obuka_Datum ON Cas;
+-- DROP INDEX IF EXISTS IX_Cas_Obuka_Datum_Pocetak ON Cas;
 SELECT
     c.Id,
     c.Datum,

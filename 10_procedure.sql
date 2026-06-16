@@ -70,8 +70,8 @@ CREATE OR ALTER PROCEDURE dbo.usp_ZakaziPrakticniCas
     @Instruktor_id UNIQUEIDENTIFIER,
     @Vozilo_id UNIQUEIDENTIFIER,
     @Datum DATE,
-    @Pocetak DATETIME2,
-    @Kraj DATETIME2,
+    @Pocetak TIME,
+    @Kraj TIME,
     @Lokacija NVARCHAR(200) = NULL,
     @Novi_Cas_id UNIQUEIDENTIFIER OUTPUT
 AS
@@ -102,13 +102,11 @@ BEGIN
         IF @Kraj <= @Pocetak
             THROW 50105, 'Kraj casa mora biti posle pocetka.', 1;
 
-        IF CONVERT(date, @Pocetak) <> @Datum OR CONVERT(date, @Kraj) <> @Datum
-            THROW 50106, 'Datum casa mora odgovarati pocetku i kraju casa.', 1;
-
         IF EXISTS (
             SELECT 1
             FROM Cas c
             WHERE c.Instruktor_id = @Instruktor_id
+              AND c.Datum = @Datum
               AND c.Status <> N'Otkazan'
               AND @Pocetak < c.Kraj
               AND @Kraj > c.Pocetak
@@ -119,6 +117,7 @@ BEGIN
             SELECT 1
             FROM Cas c
             WHERE c.Vozilo_id = @Vozilo_id
+              AND c.Datum = @Datum
               AND c.Status <> N'Otkazan'
               AND @Pocetak < c.Kraj
               AND @Kraj > c.Pocetak
