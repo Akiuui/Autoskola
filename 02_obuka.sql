@@ -5,6 +5,8 @@ CREATE TABLE Tip_obuke (
     Opis NVARCHAR(100),
     -- Naziv tipa obuke ne sme da se ponavlja.
     CONSTRAINT UQ_Tip_obuke_Tip UNIQUE (Tip),
+    -- Opis, ako je unet, ne sme biti prazan.
+    CONSTRAINT CK_Tip_obuke_Opis CHECK (Opis IS NULL OR LEN(LTRIM(RTRIM(Opis))) > 0),
     -- Tip obuke moze biti samo jedna od dozvoljenih vrednosti.
     CONSTRAINT CK_Tip_obuke_Tip CHECK (Tip IN (N'Teorijska', N'Prakticna', N'Prva Pomoc'))
 );
@@ -16,7 +18,12 @@ CREATE TABLE Kategorija_vozacke (
     Oznaka CHAR(2) NOT NULL,
     Opis NVARCHAR(50),
     -- Oznaka kategorije ne sme da se ponavlja.
-    CONSTRAINT UQ_Kategorija_vozacke_Oznaka UNIQUE (Oznaka)
+    CONSTRAINT UQ_Kategorija_vozacke_Oznaka UNIQUE (Oznaka),
+    -- Tekstualna polja ne smeju biti prazna.
+    CONSTRAINT CK_Kategorija_vozacke_Tekst CHECK (
+        LEN(LTRIM(RTRIM(Oznaka))) > 0
+        AND (Opis IS NULL OR LEN(LTRIM(RTRIM(Opis))) > 0)
+    )
 );
 GO
 

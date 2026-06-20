@@ -6,6 +6,11 @@ CREATE TABLE Cenovnik (
     Cena DECIMAL(10,2) NOT NULL,
     Datum_od DATE NOT NULL,
     Datum_do DATE,
+    -- Tekstualna polja ne smeju biti prazna.
+    CONSTRAINT CK_Cenovnik_Tekst CHECK (
+        LEN(LTRIM(RTRIM(Naziv))) > 0
+        AND (Opis IS NULL OR LEN(LTRIM(RTRIM(Opis))) > 0)
+    ),
     -- Cena mora biti pozitivna.
     CONSTRAINT CK_Cenovnik_Cena CHECK (Cena > 0),
     -- Datum prestanka vazenja, ako postoji, ne sme biti pre datuma pocetka vazenja.

@@ -17,7 +17,13 @@ CREATE TABLE Vozilo (
     -- Godiste vozila mora biti u realnom opsegu.
     CONSTRAINT CK_Vozilo_Godiste CHECK (Godiste BETWEEN 1980 AND YEAR(getdate()) + 1),
     -- Kilometraza ne moze biti negativna.
-    CONSTRAINT CK_Vozilo_Kilometraza CHECK (Kilometraza >= 0)
+    CONSTRAINT CK_Vozilo_Kilometraza CHECK (Kilometraza >= 0),
+    -- Tekstualna polja ne smeju biti prazna.
+    CONSTRAINT CK_Vozilo_Tekst CHECK (
+        LEN(LTRIM(RTRIM(Registracija))) > 0
+        AND LEN(LTRIM(RTRIM(Marka))) > 0
+        AND LEN(LTRIM(RTRIM(Model))) > 0
+    )
 );
 GO
 
@@ -38,6 +44,8 @@ CREATE TABLE Cas (
     Kreiran_datum DATETIME2 NOT NULL
         CONSTRAINT DF_Cas_Kreiran_datum DEFAULT (getdate()),
     Izmenjen_datum DATETIME2,
+    -- Lokacija, ako je uneta, ne sme biti prazna.
+    CONSTRAINT CK_Cas_Lokacija CHECK (Lokacija IS NULL OR LEN(LTRIM(RTRIM(Lokacija))) > 0),
     -- Status casa moze biti samo jedna od dozvoljenih vrednosti.
     CONSTRAINT CK_Cas_Status CHECK (Status IN (N'Zakazan', N'Odrzan', N'Otkazan')),
     -- Vreme zavrsetka casa mora biti posle vremena pocetka.
