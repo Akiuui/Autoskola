@@ -36,3 +36,9 @@ CREATE TABLE Uplata (
     CONSTRAINT CK_Uplata_Nacin_placanja CHECK (Nacin_placanja IN (N'Gotovina', N'Kartica', N'Prenos'))
 );
 GO
+
+-- CREATE INDEX IX_Uplata_Obuka_INCLUDE ON Uplata (Obuka_id)
+-- INCLUDE (Iznos, Datum, Nacin_placanja, Cenovnik_id);
+
+-- CREATE INDEX IX_Uplata_Datum_INCLUDE ON Uplata (Datum, Nacin_placanja)
+-- INCLUDE (Iznos);

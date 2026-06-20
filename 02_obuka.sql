@@ -59,6 +59,9 @@ CREATE TABLE Obuka (
 );
 GO
 
+-- CREATE INDEX IX_Obuka_Kandidat_Kategorija_Datum ON Obuka (Kandidat_id, Kategorija_id, Datum_pocetka)
+-- INCLUDE (Datum_zavrsetka, Status, Tip_Obuke, Glavni_Instruktor_id);
+
 CREATE TABLE Kandidat_grupa (
     Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY
         CONSTRAINT DF_Kandidat_grupa_Id DEFAULT (newid()),
@@ -72,3 +75,5 @@ CREATE TABLE Kandidat_grupa (
     CONSTRAINT CK_Kandidat_grupa_Datum CHECK (Datum_do IS NULL OR Datum_do >= Datum_od)
 );
 GO
+
+-- CREATE INDEX IX_Kandidat_grupa_Grupa_INCLUDE ON Kandidat_grupa (Grupa_id) INCLUDE (Obuka_id, Datum_od, Datum_do);

@@ -66,3 +66,8 @@ CREATE TABLE Cas (
     )
 );
 GO
+
+-- CREATE INDEX IX_Cas_Instruktor_Datum_Pocetak ON Cas (Instruktor_id, Datum, Pocetak);
+
+-- CREATE INDEX IX_Cas_Obuka_Datum_Pocetak ON Cas (Obuka_id, Datum, Pocetak)
+-- INCLUDE (Kraj, Status, Lokacija, Instruktor_id, Tip_id, Vozilo_id);

@@ -126,3 +126,5 @@ CREATE TABLE Zaposleni_Funkcija (
     CONSTRAINT PK_Zaposleni_Funkcija PRIMARY KEY (Id_zaposlenog, Id_funkcije)
 );
 GO
+
+-- CREATE INDEX IX_Zaposleni_Funkcija_Funkcija_Zaposleni ON Zaposleni_Funkcija (Id_funkcije, Id_zaposlenog);

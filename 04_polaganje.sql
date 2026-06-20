@@ -30,6 +30,8 @@ CREATE TABLE Polaganje_kandidat (
 );
 GO
 
+-- CREATE INDEX IX_Polaganje_kandidat_Obuka_INCLUDE ON Polaganje_kandidat (Obuka_id) INCLUDE (Polaganje_id, Uspesno, Broj_Poenta);
+
 CREATE TABLE Nadzornici_polaganja (
     Polaganje_id UNIQUEIDENTIFIER NOT NULL REFERENCES Polaganje (Id),
     Nadzornik_id UNIQUEIDENTIFIER NOT NULL REFERENCES Zaposleni (Id),
