@@ -1,12 +1,6 @@
--- Demo pozivi za poglede, funkcije i procedure.
---
--- Razlog za ovaj fajl:
--- Ovaj fajl ne definise nove objekte, nego pokazuje kako se napravljeni
--- objekti koriste. Koristan je za proveru rada i za demonstraciju projekta.
-
 GO
 
--- Primeri koriscenja pogleda.
+-- Pogledi.
 
 SELECT TOP (20) *
 FROM dbo.vw_Kandidati_Obuke
@@ -35,7 +29,7 @@ ORDER BY Datum_pocetka DESC;
 
 GO
 
--- Primeri koriscenja funkcija.
+-- Funkcije.
 
 DECLARE @PrimerObukaId UNIQUEIDENTIFIER;
 DECLARE @PrimerInstruktorId UNIQUEIDENTIFIER;
@@ -67,9 +61,8 @@ ORDER BY Datum, Pocetak;
 
 GO
 
--- Primeri koriscenja procedura.
--- Svi primeri ispod su u jednoj spoljnoj transakciji koja se na kraju
--- ponistava, da demo ne bi trajno menjao test podatke.
+-- Procedura.
+
 
 BEGIN TRY
     BEGIN TRANSACTION;
@@ -98,9 +91,19 @@ BEGIN TRY
         'demo.kandidat@autoskolatest.rs', '2000-01-01'
     );
 
-    SELECT TOP (1) @KategorijaId = Id
-    FROM Kategorija_vozacke
-    WHERE Oznaka = 'D';
+    SELECT TOP (1) @KategorijaId = kv.Id
+    FROM Kategorija_vozacke kv
+    WHERE EXISTS (
+        SELECT 1
+        FROM Vozilo v
+        WHERE v.Kategorija_id = kv.Id
+    )
+    ORDER BY
+        CASE WHEN kv.Oznaka = 'D' THEN 0 ELSE 1 END,
+        kv.Oznaka;
+
+    IF @KategorijaId IS NULL
+        THROW 51301, 'Demo ne moze da se pokrene: ne postoji kategorija sa vozilom.', 1;
 
     SELECT TOP (1) @InstruktorId = z.Id
     FROM Zaposleni z
@@ -109,13 +112,22 @@ BEGIN TRY
     WHERE f.Ime_funkcije = N'Instruktor'
     ORDER BY z.JMBG;
 
+    IF @InstruktorId IS NULL
+        THROW 51302, 'Demo ne moze da se pokrene: ne postoji instruktor.', 1;
+
     SELECT TOP (1) @TipObukeId = Id
     FROM Tip_obuke
     WHERE Tip = N'Prakticna';
 
+    IF @TipObukeId IS NULL
+        THROW 51303, 'Demo ne moze da se pokrene: ne postoji tip obuke Prakticna.', 1;
+
     SELECT TOP (1) @GrupaId = Id
     FROM Grupa
     ORDER BY Datum_kreiranja DESC;
+
+    IF @GrupaId IS NULL
+        THROW 51304, 'Demo ne moze da se pokrene: ne postoji grupa.', 1;
 
     EXEC dbo.usp_UpisKandidataNaObuku
         @Kandidat_id = @KandidatId,
@@ -130,6 +142,9 @@ BEGIN TRY
     FROM Vozilo
     WHERE Kategorija_id = @KategorijaId
     ORDER BY Registracija;
+
+    IF @VoziloId IS NULL
+        THROW 51305, 'Demo ne moze da se pokrene: ne postoji vozilo za izabranu kategoriju.', 1;
 
     EXEC dbo.usp_ZakaziPrakticniCas
         @Obuka_id = @NovaObukaId,
@@ -146,6 +161,9 @@ BEGIN TRY
     WHERE Datum_do IS NULL
     ORDER BY Cena;
 
+    IF @CenovnikId IS NULL
+        THROW 51306, 'Demo ne moze da se pokrene: ne postoji aktivna stavka cenovnika.', 1;
+
     EXEC dbo.usp_EvidentirajUplatu
         @Obuka_id = @NovaObukaId,
         @Cenovnik_id = @CenovnikId,
@@ -156,7 +174,11 @@ BEGIN TRY
 
     SELECT TOP (1) @PolaganjeId = Id
     FROM Polaganje
+    WHERE Tip_id = @TipObukeId
     ORDER BY Pocetak DESC;
+
+    IF @PolaganjeId IS NULL
+        THROW 51307, 'Demo ne moze da se pokrene: ne postoji prakticno polaganje.', 1;
 
     EXEC dbo.usp_PrijaviKandidataNaPolaganje
         @Polaganje_id = @PolaganjeId,
