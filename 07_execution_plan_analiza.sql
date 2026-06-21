@@ -97,7 +97,7 @@ WHERE u.Datum BETWEEN '2026-06-01' AND '2026-08-31'
 GROUP BY u.Datum, u.Nacin_placanja
 ORDER BY u.Datum, u.Nacin_placanja;
 -- CREATE INDEX IX_Uplata_Datum_INCLUDE ON Uplata (Datum, Nacin_placanja)
--- INCLUDE (znos);
+-- INCLUDE (Iznos);
 -- DROP INDEX IF EXISTS IX_Uplata_Datum_INCLUDE ON Uplata;
 
 -- 6. Polaganja po kandidatu
