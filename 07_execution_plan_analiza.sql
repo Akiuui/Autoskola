@@ -155,4 +155,13 @@ WHERE f.Ime_funkcije = N'Instruktor'
 -- CREATE INDEX IX_Zaposleni_Funkcija_Funkcija_Zaposleni ON Zaposleni_Funkcija (Id_funkcije, Id_zaposlenog);
 -- DROP INDEX IF EXISTS IX_Zaposleni_Funkcija_Funkcija_Zaposleni ON Zaposleni_Funkcija;
 
+-- 09. Raspored casova pogled
+SELECT TOP (20) *
+FROM dbo.vw_Raspored_Casova
+WHERE Datum BETWEEN '2026-06-01' AND '2026-06-15'
+ORDER BY Datum, Pocetak;
+-- CREATE INDEX IX_Cas_Datum_Pocetak ON Cas (Datum, Pocetak)
+-- INCLUDE (Kraj, Status, Lokacija, Instruktor_id, Tip_id, Obuka_id, Vozilo_id, Grupa_id);
+-- DROP INDEX IF EXISTS IX_Cas_Datum_Pocetak ON Cas;
+
 GO
