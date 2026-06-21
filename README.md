@@ -35,7 +35,7 @@ Finansije:
 ## SQL fajlovi
 
 `00_master.sql`
-- Pokrece fajlove za kreiranje tabela, unos test podataka, poglede, funkcije i procedure.
+- Pokrece fajlove za kreiranje tabela, unos test podataka, poglede, funkcije, procedure i trigere.
 
 `01_ljudi.sql`
 - Kreira tabele za kandidate, zaposlene, funkcije zaposlenih i izostanke.
@@ -74,6 +74,12 @@ Finansije:
 - Kreira procedure sa transakcijama.
 - Procedure predstavljaju poslovne operacije, kao sto su upis kandidata na obuku, zakazivanje casa i evidentiranje uplate.
 
+`11_trigeri.sql`
+- Kreira trigere koji automatski azuriraju povezane podatke.
+- Kada se rezultat polaganja evidentira kao uspesan, obuka se automatski zavrsava i upisuje se datum zavrsetka.
+- Kada se prakticni cas oznaci kao odrzan, vozilu se automatski povecava kilometraza.
+- Kada se promeni glavni instruktor obuke, buduci zakazani casovi se automatski prebacuju na novog instruktora.
+
 `13_demo_pozivi.sql`
 - Sadrzi primere koriscenja pogleda, funkcija i procedura.
 - Procedure se u demo delu pokrecu u transakciji koja se na kraju ponistava.
@@ -90,7 +96,7 @@ Preporuceni redosled:
 ```
 
 Objasnjenje redosleda:
-- `00_master.sql` redom pokrece fajlove za kreiranje tabela, unos test podataka, poglede, funkcije i procedure.
+- `00_master.sql` redom pokrece fajlove za kreiranje tabela, unos test podataka, poglede, funkcije, procedure i trigere.
 - `07_execution_plan_analiza.sql` sluzi za prikaz cestih read upita i predloga indeksa na osnovu execution plan-a.
 - `13_demo_pozivi.sql` sluzi za demonstraciju rada pogleda, funkcija i procedura.
 
@@ -146,6 +152,13 @@ Procedure:
 - `usp_EvidentirajUplatu`: evidentira uplatu.
 - `usp_PrijaviKandidataNaPolaganje`: prijavljuje obuku na polaganje.
 - `usp_EvidentirajRezultatPolaganja`: upisuje rezultat polaganja.
+
+Triggeri:
+- `trg_Obuka_SetIzmenjenDatum`: automatski azurira datum izmene obuke.
+- `trg_Cas_SetIzmenjenDatum`: automatski azurira datum izmene casa.
+- `trg_Cas_Odrzan_PovecajKilometrazu`: povecava kilometrazu vozila kada se prakticni cas oznaci kao odrzan.
+- `trg_PolaganjeKandidat_Uspesno_ZavrsiObuku`: zavrsava obuku i upisuje datum zavrsetka kada kandidat uspesno polozi.
+- `trg_Obuka_PromenaInstruktora_PrebaciBuduceCasove`: prebacuje buduce zakazane casove na novog glavnog instruktora obuke.
 
 Analiza indeksa:
 - `07_execution_plan_analiza.sql` sadrzi najcesce read upite i komentarisane predloge indeksa.

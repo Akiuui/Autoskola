@@ -154,3 +154,51 @@ BEGIN
       AND i.Vozilo_id IS NOT NULL;
 END;
 GO
+
+-- Kada kandidat uspesno polozi, njegova obuka se automatski zavrsava.
+CREATE OR ALTER TRIGGER dbo.trg_PolaganjeKandidat_Uspesno_ZavrsiObuku
+ON dbo.Polaganje_kandidat
+AFTER UPDATE
+AS
+BEGIN
+    IF NOT UPDATE(Uspesno)
+        RETURN;
+
+    UPDATE o
+    SET
+        Status = N'Zavrsen',
+        Datum_zavrsetka = CONVERT(date, p.Pocetak)
+    FROM Obuka o
+    JOIN inserted i ON i.Obuka_id = o.Id
+    JOIN Polaganje p ON p.Id = i.Polaganje_id
+    WHERE i.Uspesno = 1
+      AND (
+          o.Status <> N'Zavrsen'
+          OR o.Datum_zavrsetka IS NULL
+      );
+END;
+GO
+
+-- Kada se promeni glavni instruktor obuke, buduci zakazani casovi se prebacuju na novog instruktora.
+CREATE OR ALTER TRIGGER dbo.trg_Obuka_PromenaInstruktora_PrebaciBuduceCasove
+ON dbo.Obuka
+AFTER UPDATE
+AS
+BEGIN
+    IF NOT UPDATE(Glavni_Instruktor_id)
+        RETURN;
+
+    UPDATE c
+    SET Instruktor_id = i.Glavni_Instruktor_id
+    FROM Cas c
+    JOIN inserted i ON i.Id = c.Obuka_id
+    JOIN deleted d ON d.Id = i.Id
+    WHERE i.Glavni_Instruktor_id IS NOT NULL
+      AND (
+          d.Glavni_Instruktor_id IS NULL
+          OR i.Glavni_Instruktor_id <> d.Glavni_Instruktor_id
+      )
+      AND c.Status = N'Zakazan'
+      AND c.Datum >= CONVERT(date, getdate());
+END;
+GO

@@ -1,4 +1,4 @@
--- Pokretati ovim redosledom!
+-- Pokrenuti u SQLCMD modu: Query -> SQLCMD mode
 
 -- 1. Ljudi
 :r D:\Projekti\Autoskola\01_ljudi.sql
@@ -26,6 +26,9 @@
 
 -- 9. Procedure
 :r D:\Projekti\Autoskola\10_procedure.sql
+
+-- 10. Trigeri
+:r D:\Projekti\Autoskola\11_trigeri.sql
 
 -- Ove fajlove je bolje pokrenuti kasnije.
 -- :r D:\Projekti\Autoskola\07_execution_plan_analiza.sql

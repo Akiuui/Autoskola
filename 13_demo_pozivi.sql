@@ -195,6 +195,13 @@ BEGIN TRY
         @NoviCasId AS Demo_cas_id,
         @NovaUplataId AS Demo_uplata_id;
 
+    SELECT
+        Id AS Obuka_id,
+        Status,
+        Datum_zavrsetka
+    FROM Obuka
+    WHERE Id = @NovaObukaId;
+
     ROLLBACK TRANSACTION;
 END TRY
 BEGIN CATCH
