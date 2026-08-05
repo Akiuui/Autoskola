@@ -120,11 +120,13 @@ GO
 
 ## Pokretanje preko sqlcmd
 
+Komande pokrenuti iz foldera u kome se nalaze SQL fajlovi.
+
 ```powershell
 sqlcmd -S ".\SQLEXPRESS" -E -Q "CREATE DATABASE Autoskola"
-sqlcmd -S ".\SQLEXPRESS" -E -d Autoskola -i "D:\Projekti\Autoskola\00_master.sql"
-sqlcmd -S ".\SQLEXPRESS" -E -d Autoskola -i "D:\Projekti\Autoskola\07_execution_plan_analiza.sql"
-sqlcmd -S ".\SQLEXPRESS" -E -d Autoskola -i "D:\Projekti\Autoskola\13_demo_pozivi.sql"
+sqlcmd -S ".\SQLEXPRESS" -E -d Autoskola -i ".\00_master.sql"
+sqlcmd -S ".\SQLEXPRESS" -E -d Autoskola -i ".\07_execution_plan_analiza.sql"
+sqlcmd -S ".\SQLEXPRESS" -E -d Autoskola -i ".\13_demo_pozivi.sql"
 ```
 
 Ako baza vec postoji i zelite ponovno kreiranje od nule, prvo je obrisati ili koristiti drugo ime baze.
