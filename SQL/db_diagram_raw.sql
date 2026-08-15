@@ -1,5 +1,5 @@
 CREATE TABLE [Kandidat] (
-  [Id] UNIQUEIDENTIFIER PRIMARY KEY,
+  [Id] INT IDENTITY(1,1) PRIMARY KEY,
   [Istek_lekarskog] DATE,
   [Ime] NVARCHAR(50) NOT NULL,
   [Ime_roditelja] NVARCHAR(50),
@@ -15,7 +15,7 @@ CREATE TABLE [Kandidat] (
 GO
 
 CREATE TABLE [Zaposleni] (
-  [Id] UNIQUEIDENTIFIER PRIMARY KEY,
+  [Id] INT IDENTITY(1,1) PRIMARY KEY,
   [Kvalifikacija] NVARCHAR(100),
   [Aktivni_ugovor] BIT NOT NULL DEFAULT (1),
   [Ime] NVARCHAR(50) NOT NULL,
@@ -32,8 +32,8 @@ CREATE TABLE [Zaposleni] (
 GO
 
 CREATE TABLE [Zaposleni_Izostanak] (
-  [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT (newid()),
-  [Zaposleni_id] UNIQUEIDENTIFIER NOT NULL,
+  [Id] INT IDENTITY(1,1) PRIMARY KEY,
+  [Zaposleni_id] INT NOT NULL,
   [Tip] NVARCHAR(20) NOT NULL,
   [Datum_od] DATE NOT NULL,
   [Datum_do] DATE
@@ -41,13 +41,13 @@ CREATE TABLE [Zaposleni_Izostanak] (
 GO
 
 CREATE TABLE [Zaposleni_Funkcija] (
-  [Id_zaposlenog] UNIQUEIDENTIFIER NOT NULL,
-  [Id_funkcije] UNIQUEIDENTIFIER NOT NULL
+  [Id_zaposlenog] INT NOT NULL,
+  [Id_funkcije] INT NOT NULL
 )
 GO
 
 CREATE TABLE [Funkcije_Zaposlenih] (
-  [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT (newid()),
+  [Id] INT IDENTITY(1,1) PRIMARY KEY,
   [Ime_funkcije] NVARCHAR(50) NOT NULL,
   [Minimalna_kvalifikacija] NVARCHAR(50),
   [Opis] NVARCHAR(100)
@@ -55,11 +55,11 @@ CREATE TABLE [Funkcije_Zaposlenih] (
 GO
 
 CREATE TABLE [Obuka] (
-  [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT (newid()),
-  [Kategorija_id] UNIQUEIDENTIFIER NOT NULL,
-  [Glavni_Instruktor_id] UNIQUEIDENTIFIER,
-  [Kandidat_id] UNIQUEIDENTIFIER NOT NULL,
-  [Tip_Obuke] UNIQUEIDENTIFIER NOT NULL,
+  [Id] INT IDENTITY(1,1) PRIMARY KEY,
+  [Kategorija_id] INT NOT NULL,
+  [Glavni_Instruktor_id] INT,
+  [Kandidat_id] INT NOT NULL,
+  [Tip_Obuke] INT NOT NULL,
   [Datum_pocetka] DATE NOT NULL,
   [Datum_zavrsetka] DATE,
   [Status] NVARCHAR(20) NOT NULL DEFAULT 'Aktivan',
@@ -69,55 +69,55 @@ CREATE TABLE [Obuka] (
 GO
 
 CREATE TABLE [Tip_obuke] (
-  [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT (newid()),
+  [Id] INT IDENTITY(1,1) PRIMARY KEY,
   [Tip] NVARCHAR(30),
   [Opis] NVARCHAR(100)
 )
 GO
 
 CREATE TABLE [Kategorija_vozacke] (
-  [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT (newid()),
+  [Id] INT IDENTITY(1,1) PRIMARY KEY,
   [Oznaka] CHAR(2) NOT NULL,
   [Opis] NVARCHAR(50)
 )
 GO
 
 CREATE TABLE [Grupa] (
-  [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT (newid()),
+  [Id] INT IDENTITY(1,1) PRIMARY KEY,
   [Datum_kreiranja] DATE NOT NULL DEFAULT (getdate()),
   [Datum_zavrsetka] DATE
 )
 GO
 
 CREATE TABLE [Kandidat_grupa] (
-  [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT (newid()),
-  [Grupa_id] UNIQUEIDENTIFIER NOT NULL,
-  [Obuka_id] UNIQUEIDENTIFIER NOT NULL,
+  [Id] INT IDENTITY(1,1) PRIMARY KEY,
+  [Grupa_id] INT NOT NULL,
+  [Obuka_id] INT NOT NULL,
   [Datum_od] DATE NOT NULL,
   [Datum_do] DATE
 )
 GO
 
 CREATE TABLE [Cas] (
-  [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT (newid()),
-  [Instruktor_id] UNIQUEIDENTIFIER NOT NULL,
-  [Tip_id] UNIQUEIDENTIFIER NOT NULL,
+  [Id] INT IDENTITY(1,1) PRIMARY KEY,
+  [Instruktor_id] INT NOT NULL,
+  [Tip_id] INT NOT NULL,
   [Lokacija] NVARCHAR(200),
   [Datum] DATE NOT NULL,
-  [Pocetak] DATETIME2 NOT NULL,
-  [Kraj] DATETIME2 NOT NULL,
+  [Pocetak] TIME NOT NULL,
+  [Kraj] TIME NOT NULL,
   [Status] NVARCHAR(20) NOT NULL DEFAULT 'Zakazan',
-  [Obuka_id] UNIQUEIDENTIFIER,
-  [Vozilo_id] UNIQUEIDENTIFIER,
-  [Grupa_id] UNIQUEIDENTIFIER,
+  [Obuka_id] INT,
+  [Vozilo_id] INT,
+  [Grupa_id] INT,
   [Kreiran_datum] DATETIME2 NOT NULL DEFAULT (getdate()),
   [Izmenjen_datum] DATETIME2
 )
 GO
 
 CREATE TABLE [Polaganje] (
-  [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT (newid()),
-  [Tip_id] NVARCHAR(20) NOT NULL,
+  [Id] INT IDENTITY(1,1) PRIMARY KEY,
+  [Tip_id] INT NOT NULL,
   [Pocetak] DATETIME2 NOT NULL,
   [Kraj] DATETIME2 NOT NULL,
   [Kreiran_datum] DATETIME2 NOT NULL DEFAULT (getdate()),
@@ -126,26 +126,26 @@ CREATE TABLE [Polaganje] (
 GO
 
 CREATE TABLE [Polaganje_kandidat] (
-  [Polaganje_id] UNIQUEIDENTIFIER NOT NULL,
-  [Obuka_id] UNIQUEIDENTIFIER NOT NULL,
+  [Polaganje_id] INT NOT NULL,
+  [Obuka_id] INT NOT NULL,
   [Uspesno] BIT,
   [Broj_Poenta] TINYINT
 )
 GO
 
 CREATE TABLE [Nadzornici_polaganja] (
-  [Polaganje_id] UNIQUEIDENTIFIER NOT NULL,
-  [Nadzornik_id] UNIQUEIDENTIFIER NOT NULL
+  [Polaganje_id] INT NOT NULL,
+  [Nadzornik_id] INT NOT NULL
 )
 GO
 
 CREATE TABLE [Vozilo] (
-  [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT (newid()),
+  [Id] INT IDENTITY(1,1) PRIMARY KEY,
   [Registracija] NVARCHAR(20) UNIQUE NOT NULL,
   [Marka] NVARCHAR(50) NOT NULL,
   [Model] NVARCHAR(50) NOT NULL,
   [Godiste] INT NOT NULL,
-  [Kategorija_id] UNIQUEIDENTIFIER NOT NULL,
+  [Kategorija_id] INT NOT NULL,
   [Kilometraza] INT NOT NULL DEFAULT (0),
   [Datum_registracije] DATE NOT NULL,
   [Kreiran_datum] DATETIME2 NOT NULL DEFAULT (getdate()),
@@ -154,7 +154,7 @@ CREATE TABLE [Vozilo] (
 GO
 
 CREATE TABLE [Cenovnik] (
-  [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT (newid()),
+  [Id] INT IDENTITY(1,1) PRIMARY KEY,
   [Naziv] NVARCHAR(100) NOT NULL,
   [Opis] NVARCHAR(500),
   [Cena] DECIMAL(10,2) NOT NULL,
@@ -164,9 +164,9 @@ CREATE TABLE [Cenovnik] (
 GO
 
 CREATE TABLE [Uplata] (
-  [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT (newid()),
-  [Cenovnik_id] UNIQUEIDENTIFIER NOT NULL,
-  [Obuka_id] UNIQUEIDENTIFIER NOT NULL,
+  [Id] INT IDENTITY(1,1) PRIMARY KEY,
+  [Cenovnik_id] INT NOT NULL,
+  [Obuka_id] INT NOT NULL,
   [Iznos] DECIMAL(10,2) NOT NULL,
   [Datum] DATE NOT NULL DEFAULT (getdate()),
   [Nacin_placanja] NVARCHAR(20) NOT NULL,

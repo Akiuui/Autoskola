@@ -1,6 +1,6 @@
 -- Test podaci za bazu Auto skola.
 -- Pokrenuti nakon kreiranja svih tabela.
--- Id kolone se ne unose rucno; baze ih generise preko DEFAULT (newid()).
+-- Id kolone se ne unose rucno; baza ih generise preko IDENTITY svojstva.
 
 INSERT INTO Kandidat (
     Istek_lekarskog, Ime, Ime_roditelja, Prezime, JMBG,

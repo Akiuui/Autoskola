@@ -31,8 +31,8 @@ GO
 
 -- Funkcije.
 
-DECLARE @PrimerObukaId UNIQUEIDENTIFIER;
-DECLARE @PrimerInstruktorId UNIQUEIDENTIFIER;
+DECLARE @PrimerObukaId INT;
+DECLARE @PrimerInstruktorId INT;
 
 SELECT TOP (1) @PrimerObukaId = Id
 FROM Obuka
@@ -67,29 +67,29 @@ GO
 BEGIN TRY
     BEGIN TRANSACTION;
 
-    DECLARE @KandidatId UNIQUEIDENTIFIER;
-    DECLARE @KategorijaId UNIQUEIDENTIFIER;
-    DECLARE @InstruktorId UNIQUEIDENTIFIER;
-    DECLARE @TipObukeId UNIQUEIDENTIFIER;
-    DECLARE @GrupaId UNIQUEIDENTIFIER;
-    DECLARE @NovaObukaId UNIQUEIDENTIFIER;
-    DECLARE @VoziloId UNIQUEIDENTIFIER;
-    DECLARE @NoviCasId UNIQUEIDENTIFIER;
-    DECLARE @CenovnikId UNIQUEIDENTIFIER;
-    DECLARE @NovaUplataId UNIQUEIDENTIFIER;
-    DECLARE @PolaganjeId UNIQUEIDENTIFIER;
-
-    SET @KandidatId = newid();
+    DECLARE @KandidatId INT;
+    DECLARE @KategorijaId INT;
+    DECLARE @InstruktorId INT;
+    DECLARE @TipObukeId INT;
+    DECLARE @GrupaId INT;
+    DECLARE @NovaObukaId INT;
+    DECLARE @VoziloId INT;
+    DECLARE @NoviCasId INT;
+    DECLARE @CenovnikId INT;
+    DECLARE @NovaUplataId INT;
+    DECLARE @PolaganjeId INT;
 
     INSERT INTO Kandidat (
-        Id, Istek_lekarskog, Ime, Ime_roditelja, Prezime, JMBG,
+        Istek_lekarskog, Ime, Ime_roditelja, Prezime, JMBG,
         Istek_licne_karte, Telefon, Email, Datum_rodjenja
     )
     VALUES (
-        @KandidatId, '2030-01-01', N'Demo', N'Demo', N'Kandidat',
+        '2030-01-01', N'Demo', N'Demo', N'Kandidat',
         '9999999999999', '2032-01-01', '0609999999',
         'demo.kandidat@autoskolatest.rs', '2000-01-01'
     );
+
+    SET @KandidatId = CONVERT(INT, SCOPE_IDENTITY());
 
     SELECT TOP (1) @KategorijaId = kv.Id
     FROM Kategorija_vozacke kv

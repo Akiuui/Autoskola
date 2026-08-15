@@ -3,7 +3,7 @@ GO
 -- Ukupno uplaceno za obuku.
 CREATE OR ALTER FUNCTION dbo.fn_UkupnoUplacenoZaObuku
 (
-    @Obuka_id UNIQUEIDENTIFIER
+    @Obuka_id INT
 )
 RETURNS DECIMAL(10, 2)
 AS
@@ -21,7 +21,7 @@ GO
 -- Broj casova za obuku.
 CREATE OR ALTER FUNCTION dbo.fn_BrojCasovaZaObuku
 (
-    @Obuka_id UNIQUEIDENTIFIER,
+    @Obuka_id INT,
     @Samo_odrzani BIT
 )
 RETURNS INT
@@ -41,7 +41,7 @@ GO
 -- Broj polaganja za obuku.
 CREATE OR ALTER FUNCTION dbo.fn_BrojPolaganjaZaObuku
 (
-    @Obuka_id UNIQUEIDENTIFIER
+    @Obuka_id INT
 )
 RETURNS INT
 AS
@@ -59,8 +59,8 @@ GO
 -- Provera aktivne obuke kandidata po kategoriji.
 CREATE OR ALTER FUNCTION dbo.fn_KandidatImaAktivnuObuku
 (
-    @Kandidat_id UNIQUEIDENTIFIER,
-    @Kategorija_id UNIQUEIDENTIFIER
+    @Kandidat_id INT,
+    @Kategorija_id INT
 )
 RETURNS BIT
 AS
@@ -85,7 +85,7 @@ GO
 -- Raspored instruktora za zadati period.
 CREATE OR ALTER FUNCTION dbo.fn_RasporedInstruktora
 (
-    @Instruktor_id UNIQUEIDENTIFIER,
+    @Instruktor_id INT,
     @Datum_od DATE,
     @Datum_do DATE
 )

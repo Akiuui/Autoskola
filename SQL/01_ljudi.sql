@@ -1,6 +1,5 @@
 CREATE TABLE Kandidat (
-    Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY
-        CONSTRAINT DF_Kandidat_Id DEFAULT (newid()),
+    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
     Istek_lekarskog DATE,
     Ime NVARCHAR(50) NOT NULL,
     Ime_roditelja NVARCHAR(50),
@@ -44,8 +43,7 @@ CREATE TABLE Kandidat (
 GO
 
 CREATE TABLE Zaposleni (
-    Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY
-        CONSTRAINT DF_Zaposleni_Id DEFAULT (newid()),
+    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
     Kvalifikacija NVARCHAR(100),
     Aktivni_ugovor BIT NOT NULL
         CONSTRAINT DF_Zaposleni_Aktivni_ugovor DEFAULT (1),
@@ -92,9 +90,8 @@ CREATE TABLE Zaposleni (
 GO
 
 CREATE TABLE Zaposleni_Izostanak (
-    Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY
-        CONSTRAINT DF_Zaposleni_Izostanak_Id DEFAULT (newid()),
-    Zaposleni_id UNIQUEIDENTIFIER NOT NULL REFERENCES Zaposleni (Id),
+    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    Zaposleni_id INT NOT NULL REFERENCES Zaposleni (Id),
     Tip NVARCHAR(20) NOT NULL,
     Datum_od DATE NOT NULL,
     Datum_do DATE,
@@ -106,8 +103,7 @@ CREATE TABLE Zaposleni_Izostanak (
 GO
 
 CREATE TABLE Funkcije_Zaposlenih (
-    Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY
-        CONSTRAINT DF_Funkcije_Zaposlenih_Id DEFAULT (newid()),
+    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
     Ime_funkcije NVARCHAR(50) NOT NULL,
     Minimalna_kvalifikacija NVARCHAR(50),
     Opis NVARCHAR(100),
@@ -121,8 +117,8 @@ CREATE TABLE Funkcije_Zaposlenih (
 GO
 
 CREATE TABLE Zaposleni_Funkcija (
-    Id_zaposlenog UNIQUEIDENTIFIER NOT NULL REFERENCES Zaposleni (Id),
-    Id_funkcije UNIQUEIDENTIFIER NOT NULL REFERENCES Funkcije_Zaposlenih (Id),
+    Id_zaposlenog INT NOT NULL REFERENCES Zaposleni (Id),
+    Id_funkcije INT NOT NULL REFERENCES Funkcije_Zaposlenih (Id),
     CONSTRAINT PK_Zaposleni_Funkcija PRIMARY KEY (Id_zaposlenog, Id_funkcije)
 );
 GO

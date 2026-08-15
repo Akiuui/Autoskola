@@ -2,13 +2,13 @@ GO
 
 -- Upis kandidata na obuku.
 CREATE OR ALTER PROCEDURE dbo.usp_UpisKandidataNaObuku
-    @Kandidat_id UNIQUEIDENTIFIER,
-    @Kategorija_id UNIQUEIDENTIFIER,
-    @Glavni_Instruktor_id UNIQUEIDENTIFIER = NULL,
-    @Tip_Obuke UNIQUEIDENTIFIER,
+    @Kandidat_id INT,
+    @Kategorija_id INT,
+    @Glavni_Instruktor_id INT = NULL,
+    @Tip_Obuke INT,
     @Datum_pocetka DATE,
-    @Grupa_id UNIQUEIDENTIFIER = NULL,
-    @Nova_Obuka_id UNIQUEIDENTIFIER OUTPUT
+    @Grupa_id INT = NULL,
+    @Nova_Obuka_id INT OUTPUT
 AS
 BEGIN
     SET XACT_ABORT ON;
@@ -36,16 +36,16 @@ BEGIN
         IF dbo.fn_KandidatImaAktivnuObuku(@Kandidat_id, @Kategorija_id) = 1
             THROW 50006, 'Kandidat vec ima aktivnu obuku za ovu kategoriju.', 1;
 
-        SET @Nova_Obuka_id = newid();
-
         INSERT INTO Obuka (
-            Id, Kategorija_id, Glavni_Instruktor_id, Kandidat_id, Tip_Obuke,
+            Kategorija_id, Glavni_Instruktor_id, Kandidat_id, Tip_Obuke,
             Datum_pocetka, Datum_zavrsetka, Status
         )
         VALUES (
-            @Nova_Obuka_id, @Kategorija_id, @Glavni_Instruktor_id, @Kandidat_id,
+            @Kategorija_id, @Glavni_Instruktor_id, @Kandidat_id,
             @Tip_Obuke, @Datum_pocetka, NULL, N'Aktivan'
         );
+
+        SET @Nova_Obuka_id = CONVERT(INT, SCOPE_IDENTITY());
 
         IF @Grupa_id IS NOT NULL
         BEGIN
@@ -66,19 +66,19 @@ GO
 
 -- Zakazivanje prakticnog casa.
 CREATE OR ALTER PROCEDURE dbo.usp_ZakaziPrakticniCas
-    @Obuka_id UNIQUEIDENTIFIER,
-    @Instruktor_id UNIQUEIDENTIFIER,
-    @Vozilo_id UNIQUEIDENTIFIER,
+    @Obuka_id INT,
+    @Instruktor_id INT,
+    @Vozilo_id INT,
     @Datum DATE,
     @Pocetak TIME,
     @Kraj TIME,
     @Lokacija NVARCHAR(200) = NULL,
-    @Novi_Cas_id UNIQUEIDENTIFIER OUTPUT
+    @Novi_Cas_id INT OUTPUT
 AS
 BEGIN
     SET XACT_ABORT ON;
 
-    DECLARE @Tip_id UNIQUEIDENTIFIER;
+    DECLARE @Tip_id INT;
 
     BEGIN TRY
         BEGIN TRANSACTION;
@@ -124,16 +124,16 @@ BEGIN
         )
             THROW 50108, 'Vozilo je vec zauzeto u tom terminu.', 1;
 
-        SET @Novi_Cas_id = newid();
-
         INSERT INTO Cas (
-            Id, Instruktor_id, Tip_id, Lokacija, Datum, Pocetak, Kraj,
+            Instruktor_id, Tip_id, Lokacija, Datum, Pocetak, Kraj,
             Status, Obuka_id, Vozilo_id, Grupa_id
         )
         VALUES (
-            @Novi_Cas_id, @Instruktor_id, @Tip_id, @Lokacija, @Datum, @Pocetak,
+            @Instruktor_id, @Tip_id, @Lokacija, @Datum, @Pocetak,
             @Kraj, N'Zakazan', @Obuka_id, @Vozilo_id, NULL
         );
+
+        SET @Novi_Cas_id = CONVERT(INT, SCOPE_IDENTITY());
 
         COMMIT TRANSACTION;
     END TRY
@@ -148,12 +148,12 @@ GO
 
 -- Evidentiranje uplate.
 CREATE OR ALTER PROCEDURE dbo.usp_EvidentirajUplatu
-    @Obuka_id UNIQUEIDENTIFIER,
-    @Cenovnik_id UNIQUEIDENTIFIER,
+    @Obuka_id INT,
+    @Cenovnik_id INT,
     @Iznos DECIMAL(10, 2),
     @Datum DATE,
     @Nacin_placanja NVARCHAR(20),
-    @Nova_Uplata_id UNIQUEIDENTIFIER OUTPUT
+    @Nova_Uplata_id INT OUTPUT
 AS
 BEGIN
     SET XACT_ABORT ON;
@@ -173,15 +173,15 @@ BEGIN
         IF @Nacin_placanja NOT IN (N'Gotovina', N'Kartica', N'Prenos')
             THROW 50204, 'Nacin placanja nije dozvoljen.', 1;
 
-        SET @Nova_Uplata_id = newid();
-
         INSERT INTO Uplata (
-            Id, Cenovnik_id, Obuka_id, Iznos, Datum, Nacin_placanja
+            Cenovnik_id, Obuka_id, Iznos, Datum, Nacin_placanja
         )
         VALUES (
-            @Nova_Uplata_id, @Cenovnik_id, @Obuka_id, @Iznos, @Datum,
+            @Cenovnik_id, @Obuka_id, @Iznos, @Datum,
             @Nacin_placanja
         );
+
+        SET @Nova_Uplata_id = CONVERT(INT, SCOPE_IDENTITY());
 
         COMMIT TRANSACTION;
     END TRY
@@ -196,8 +196,8 @@ GO
 
 -- Prijava kandidata na polaganje.
 CREATE OR ALTER PROCEDURE dbo.usp_PrijaviKandidataNaPolaganje
-    @Polaganje_id UNIQUEIDENTIFIER,
-    @Obuka_id UNIQUEIDENTIFIER
+    @Polaganje_id INT,
+    @Obuka_id INT
 AS
 BEGIN
     SET XACT_ABORT ON;
@@ -239,8 +239,8 @@ GO
 
 -- Evidentiranje rezultata polaganja.
 CREATE OR ALTER PROCEDURE dbo.usp_EvidentirajRezultatPolaganja
-    @Polaganje_id UNIQUEIDENTIFIER,
-    @Obuka_id UNIQUEIDENTIFIER,
+    @Polaganje_id INT,
+    @Obuka_id INT,
     @Uspesno BIT,
     @Broj_Poenta TINYINT
 AS

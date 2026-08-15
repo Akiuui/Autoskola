@@ -1,6 +1,5 @@
 CREATE TABLE Tip_obuke (
-    Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY
-        CONSTRAINT DF_Tip_obuke_Id DEFAULT (newid()),
+    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
     Tip NVARCHAR(30) NOT NULL,
     Opis NVARCHAR(100),
     -- Naziv tipa obuke ne sme da se ponavlja.
@@ -13,8 +12,7 @@ CREATE TABLE Tip_obuke (
 GO
 
 CREATE TABLE Kategorija_vozacke (
-    Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY
-        CONSTRAINT DF_Kategorija_vozacke_Id DEFAULT (newid()),
+    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
     Oznaka CHAR(2) NOT NULL,
     Opis NVARCHAR(50),
     -- Oznaka kategorije ne sme da se ponavlja.
@@ -28,8 +26,7 @@ CREATE TABLE Kategorija_vozacke (
 GO
 
 CREATE TABLE Grupa (
-    Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY
-        CONSTRAINT DF_Grupa_Id DEFAULT (newid()),
+    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
     Datum_kreiranja DATE NOT NULL
         CONSTRAINT DF_Grupa_Datum_kreiranja DEFAULT (getdate()),
     Datum_zavrsetka DATE,
@@ -39,12 +36,11 @@ CREATE TABLE Grupa (
 GO
 
 CREATE TABLE Obuka (
-    Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY
-        CONSTRAINT DF_Obuka_Id DEFAULT (newid()),
-    Kategorija_id UNIQUEIDENTIFIER NOT NULL REFERENCES Kategorija_vozacke (Id),
-    Glavni_Instruktor_id UNIQUEIDENTIFIER REFERENCES Zaposleni (Id),
-    Kandidat_id UNIQUEIDENTIFIER NOT NULL REFERENCES Kandidat (Id),
-    Tip_Obuke UNIQUEIDENTIFIER NOT NULL REFERENCES Tip_obuke (Id),
+    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    Kategorija_id INT NOT NULL REFERENCES Kategorija_vozacke (Id),
+    Glavni_Instruktor_id INT REFERENCES Zaposleni (Id),
+    Kandidat_id INT NOT NULL REFERENCES Kandidat (Id),
+    Tip_Obuke INT NOT NULL REFERENCES Tip_obuke (Id),
     Datum_pocetka DATE NOT NULL,
     Datum_zavrsetka DATE,
     Status NVARCHAR(20) NOT NULL
@@ -63,10 +59,9 @@ GO
 -- INCLUDE (Datum_zavrsetka, Status, Tip_Obuke, Glavni_Instruktor_id);
 
 CREATE TABLE Kandidat_grupa (
-    Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY
-        CONSTRAINT DF_Kandidat_grupa_Id DEFAULT (newid()),
-    Grupa_id UNIQUEIDENTIFIER NOT NULL REFERENCES Grupa (Id),
-    Obuka_id UNIQUEIDENTIFIER NOT NULL REFERENCES Obuka (Id),
+    Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    Grupa_id INT NOT NULL REFERENCES Grupa (Id),
+    Obuka_id INT NOT NULL REFERENCES Obuka (Id),
     Datum_od DATE NOT NULL,
     Datum_do DATE,
     -- Ista obuka ne moze biti dodata u istu grupu vise puta.
