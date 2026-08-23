@@ -1,6 +1,6 @@
 GO
 
--- 1. Casovi po instruktoru i datumu
+-- 1. Vozilo po datumu
 SELECT
     c.Id,
     c.Datum,
@@ -8,16 +8,18 @@ SELECT
     c.Kraj,
     c.Status,
     c.Lokacija,
-    t.Tip AS Tip_casa,
+    v.Registracija,
+    v.Marka,
+    v.Model,
     z.Ime + N' ' + z.Prezime AS Instruktor
 FROM Cas c
-JOIN Tip_obuke t ON t.Id = c.Tip_id
+JOIN Vozilo v ON v.Id = c.Vozilo_id
 JOIN Zaposleni z ON z.Id = c.Instruktor_id
-WHERE z.JMBG = '0404000710008'
+WHERE v.Registracija = 'BG-101-AA'
   AND c.Datum BETWEEN '2026-06-01' AND '2026-07-31'
 ORDER BY c.Datum, c.Pocetak;
--- CREATE INDEX IX_Cas_Instruktor_Datum_Pocetak ON Cas (Instruktor_id, Datum, Pocetak);
--- DROP INDEX IF EXISTS IX_Cas_Instruktor_Datum_Pocetak ON Cas;
+CREATE INDEX IX_Cas_Instruktor_Datum_Pocetak ON Cas (Instruktor_id, Datum, Pocetak);
+DROP INDEX IF EXISTS IX_Cas_Instruktor_Datum_Pocetak ON Cas;
 
 -- 2. Casovi po kandidatu
 SELECT
@@ -114,8 +116,8 @@ JOIN Obuka o ON o.Id = pk.Obuka_id
 JOIN Kandidat k ON k.Id = o.Kandidat_id
 JOIN Tip_obuke t ON t.Id = p.Tip_id
 WHERE k.JMBG = '1204004715004'
--- CREATE INDEX IX_Polaganje_kandidat_Obuka_INCLUDE ON Polaganje_kandidat (Obuka_id) INCLUDE (Polaganje_id, Uspesno, Broj_Poenta);
--- DROP INDEX IF EXISTS IX_Polaganje_kandidat_Obuka_INCLUDE ON Polaganje_kandidat;
+CREATE INDEX IX_Polaganje_kandidat_Obuka_INCLUDE ON Polaganje_kandidat (Obuka_id) INCLUDE (Polaganje_id, Uspesno, Broj_Poenta);
+DROP INDEX IF EXISTS IX_Polaganje_kandidat_Obuka_INCLUDE ON Polaganje_kandidat;
 
 
 -- 7. Kandidati po grupi
@@ -135,8 +137,8 @@ JOIN Kandidat k ON k.Id = o.Kandidat_id
 JOIN Kategorija_vozacke kv ON kv.Id = o.Kategorija_id
 WHERE g.Datum_kreiranja = '2026-04-01'
 ORDER BY k.Prezime, k.Ime;
--- CREATE INDEX IX_Kandidat_grupa_Grupa_INCLUDE ON Kandidat_grupa (Grupa_id) INCLUDE (Obuka_id, Datum_od, Datum_do);
--- DROP INDEX IF EXISTS IX_Kandidat_grupa_Grupa_INCLUDE ON Kandidat_grupa;
+CREATE INDEX IX_Kandidat_grupa_Grupa_INCLUDE ON Kandidat_grupa (Grupa_id) INCLUDE (Obuka_id, Datum_od, Datum_do);
+DROP INDEX IF EXISTS IX_Kandidat_grupa_Grupa_INCLUDE ON Kandidat_grupa;
 
 
 -- 8. Zaposleni po funkciji
@@ -152,16 +154,16 @@ FROM Zaposleni_Funkcija zf
 JOIN Zaposleni z ON z.Id = zf.Id_zaposlenog
 JOIN Funkcije_Zaposlenih f ON f.Id = zf.Id_funkcije
 WHERE f.Ime_funkcije = N'Instruktor'
--- CREATE INDEX IX_Zaposleni_Funkcija_Funkcija_Zaposleni ON Zaposleni_Funkcija (Id_funkcije, Id_zaposlenog);
--- DROP INDEX IF EXISTS IX_Zaposleni_Funkcija_Funkcija_Zaposleni ON Zaposleni_Funkcija;
+CREATE INDEX IX_Zaposleni_Funkcija_Funkcija_Zaposleni ON Zaposleni_Funkcija (Id_funkcije, Id_zaposlenog);
+DROP INDEX IF EXISTS IX_Zaposleni_Funkcija_Funkcija_Zaposleni ON Zaposleni_Funkcija;
 
 -- 09. Raspored casova pogled
 SELECT TOP (20) *
 FROM dbo.vw_Raspored_Casova
 WHERE Datum BETWEEN '2026-06-01' AND '2026-06-15'
 ORDER BY Datum, Pocetak;
--- CREATE INDEX IX_Cas_Datum_Pocetak ON Cas (Datum, Pocetak)
--- INCLUDE (Kraj, Status, Lokacija, Instruktor_id, Tip_id, Obuka_id, Vozilo_id, Grupa_id);
--- DROP INDEX IF EXISTS IX_Cas_Datum_Pocetak ON Cas;
+CREATE INDEX IX_Cas_Datum_Pocetak ON Cas (Datum, Pocetak)
+INCLUDE (Kraj, Status, Lokacija, Instruktor_id, Tip_id, Obuka_id, Vozilo_id, Grupa_id);
+DROP INDEX IF EXISTS IX_Cas_Datum_Pocetak ON Cas;
 
 GO

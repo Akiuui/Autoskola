@@ -279,9 +279,9 @@ INSERT INTO Kandidat (
 )
 SELECT
     DATEADD(day, n % 365, CONVERT(date, '2027-01-01')),
-    N'Kandidat' + CAST(n AS NVARCHAR(10)),
-    N'Roditelj' + CAST(n AS NVARCHAR(10)),
-    N'Test' + CAST(n AS NVARCHAR(10)),
+    CHOOSE((n % 10) + 1, N'Luka', N'Ana', N'Marko', N'Jelena', N'Nikola', N'Milica', N'Petar', N'Sara', N'Nemanja', N'Teodora'),
+    CHOOSE((n % 10) + 1, N'Milan', N'Ivan', N'Dejan', N'Zoran', N'Nenad', N'Dragan', N'Goran', N'Vladimir', N'Stefan', N'Bojan'),
+    CHOOSE((n % 10) + 1, N'Petrovic', N'Jovanovic', N'Markovic', N'Nikolic', N'Ilic', N'Stojic', N'Pavlovic', N'Savic', N'Lazic', N'Kostic'),
     RIGHT('0000000000000' + CAST(1000000000000 + n AS VARCHAR(13)), 13),
     DATEADD(day, n % 900, CONVERT(date, '2030-01-01')),
     '060' + RIGHT('0000000' + CAST(7000000 + n AS VARCHAR(7)), 7),
@@ -310,9 +310,9 @@ SELECT
         ELSE N'Instruktor B kategorije'
     END,
     CASE WHEN n % 10 = 0 THEN 0 ELSE 1 END,
-    N'Zaposleni' + CAST(n AS NVARCHAR(10)),
-    N'Roditelj' + CAST(n AS NVARCHAR(10)),
-    N'Test' + CAST(n AS NVARCHAR(10)),
+    CHOOSE((n % 10) + 1, N'Milan', N'Ivan', N'Dejan', N'Zoran', N'Nenad', N'Dragan', N'Goran', N'Vladimir', N'Stefan', N'Bojan'),
+    CHOOSE((n % 10) + 1, N'Petar', N'Lazar', N'Milos', N'Nikola', N'Marko', N'Jovan', N'Aleksa', N'Filip', N'Dusan', N'Andrej'),
+    CHOOSE((n % 10) + 1, N'Kostic', N'Ilic', N'Pavlovic', N'Savic', N'Lazic', N'Petrovic', N'Jovanovic', N'Markovic', N'Nikolic', N'Stojic'),
     RIGHT('0000000000000' + CAST(2000000000000 + n AS VARCHAR(13)), 13),
     DATEADD(day, n % 900, CONVERT(date, '2030-01-01')),
     '061' + RIGHT('0000000' + CAST(8000000 + n AS VARCHAR(7)), 7),
@@ -506,6 +506,55 @@ WHERE NOT EXISTS (
     FROM Kandidat_grupa kg
     WHERE kg.Grupa_id = g.Id
       AND kg.Obuka_id = o.Id
+);
+
+;WITH Grupe AS (
+    SELECT
+        Id,
+        ROW_NUMBER() OVER (ORDER BY Datum_kreiranja) AS rn,
+        COUNT(*) OVER () AS ukupno
+    FROM Grupa
+    WHERE Datum_zavrsetka IS NULL
+       OR Datum_zavrsetka >= '2026-06-01'
+),
+Obuke AS (
+    SELECT
+        Id,
+        Datum_pocetka,
+        ROW_NUMBER() OVER (ORDER BY Datum_pocetka, Id) AS rn
+    FROM Obuka
+    WHERE Datum_pocetka >= '2026-06-01'
+),
+DodatnaClanstva AS (
+    SELECT
+        g.Id AS Grupa_id,
+        o.Id AS Obuka_id,
+        DATEADD(day, d.Pomeraj_dana, o.Datum_pocetka) AS Datum_od,
+        CASE
+            WHEN (o.rn + d.Pomeraj_grupe) % 4 = 0
+                THEN DATEADD(day, d.Pomeraj_dana + 30, o.Datum_pocetka)
+            ELSE NULL
+        END AS Datum_do
+    FROM Obuke o
+    CROSS JOIN (VALUES
+        (1, 7),
+        (2, 14),
+        (3, 21)
+    ) AS d(Pomeraj_grupe, Pomeraj_dana)
+    JOIN Grupe g ON g.rn = ((o.rn + d.Pomeraj_grupe - 1) % g.ukupno) + 1
+)
+INSERT INTO Kandidat_grupa (Grupa_id, Obuka_id, Datum_od, Datum_do)
+SELECT
+    dc.Grupa_id,
+    dc.Obuka_id,
+    dc.Datum_od,
+    dc.Datum_do
+FROM DodatnaClanstva dc
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Kandidat_grupa kg
+    WHERE kg.Grupa_id = dc.Grupa_id
+      AND kg.Obuka_id = dc.Obuka_id
 );
 
 ;WITH Brojevi AS (
