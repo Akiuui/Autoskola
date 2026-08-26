@@ -37,10 +37,10 @@ GO
 
 CREATE TABLE Obuka (
     Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-    Kategorija_id INT NOT NULL REFERENCES Kategorija_vozacke (Id),
-    Glavni_Instruktor_id INT REFERENCES Zaposleni (Id),
-    Kandidat_id INT NOT NULL REFERENCES Kandidat (Id),
-    Tip_Obuke INT NOT NULL REFERENCES Tip_obuke (Id),
+    Kategorija_id INT NOT NULL CONSTRAINT FK_Obuka_Kategorija_Id REFERENCES Kategorija_vozacke (Id),
+    Glavni_Instruktor_id INT CONSTRAINT FK_Obuka_Instruktor REFERENCES Zaposleni (Id),
+    Kandidat_id INT NOT NULL CONSTRAINT FK_Obuka_Kandidat_Id REFERENCES Kandidat (Id),
+    Tip_Obuke INT NOT NULL CONSTRAINT FK_Obuka_Tip_Id REFERENCES Tip_obuke (Id),
     Datum_pocetka DATE NOT NULL,
     Datum_zavrsetka DATE,
     Status NVARCHAR(20) NOT NULL
@@ -60,8 +60,8 @@ GO
 
 CREATE TABLE Kandidat_grupa (
     Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-    Grupa_id INT NOT NULL REFERENCES Grupa (Id),
-    Obuka_id INT NOT NULL REFERENCES Obuka (Id),
+    Grupa_id INT NOT NULL CONSTRAINT FK_Kandidat_grupa_Grupa_Id REFERENCES Grupa (Id),
+    Obuka_id INT NOT NULL CONSTRAINT FK_Kandidat_grupa_Obuka_Id REFERENCES Obuka (Id),
     Datum_od DATE NOT NULL,
     Datum_do DATE,
     -- Ista obuka ne moze biti dodata u istu grupu vise puta.

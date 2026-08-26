@@ -4,7 +4,7 @@ CREATE TABLE Vozilo (
     Marka NVARCHAR(50) NOT NULL,
     Model NVARCHAR(50) NOT NULL,
     Godiste INT NOT NULL,
-    Kategorija_id INT NOT NULL REFERENCES Kategorija_vozacke (Id),
+    Kategorija_id INT NOT NULL CONSTRAINT FK_Vozilo_Kategorija_Id REFERENCES Kategorija_vozacke (Id),
     Kilometraza INT NOT NULL
         CONSTRAINT DF_Vozilo_Kilometraza DEFAULT (0),
     Datum_registracije DATE NOT NULL,
@@ -28,17 +28,17 @@ GO
 
 CREATE TABLE Cas (
     Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-    Instruktor_id INT NOT NULL REFERENCES Zaposleni (Id),
-    Tip_id INT NOT NULL REFERENCES Tip_obuke (Id),
+    Instruktor_id INT NOT NULL CONSTRAINT FK_Cas_Instruktor_Id REFERENCES Zaposleni (Id),
+    Tip_id INT NOT NULL CONSTRAINT FK_Cas_Tip_Id REFERENCES Tip_obuke (Id),
     Lokacija NVARCHAR(200),
     Datum DATE NOT NULL,
     Pocetak TIME NOT NULL,
     Kraj TIME NOT NULL,
     Status NVARCHAR(20) NOT NULL
         CONSTRAINT DF_Cas_Status DEFAULT (N'Zakazan'),
-    Obuka_id INT REFERENCES Obuka (Id),
-    Vozilo_id INT REFERENCES Vozilo (Id),
-    Grupa_id INT REFERENCES Grupa (Id),
+    Obuka_id INT CONSTRAINT FK_Cas_Obuka_Id REFERENCES Obuka (Id),
+    Vozilo_id INT CONSTRAINT FK_Cas_Vozilo_Id REFERENCES Vozilo (Id),
+    Grupa_id INT CONSTRAINT FK_Cas_Grupa_Id REFERENCES Grupa (Id),
     Kreiran_datum DATETIME2 NOT NULL
         CONSTRAINT DF_Cas_Kreiran_datum DEFAULT (getdate()),
     Izmenjen_datum DATETIME2,

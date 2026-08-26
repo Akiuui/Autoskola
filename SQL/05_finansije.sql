@@ -19,8 +19,8 @@ GO
 
 CREATE TABLE Uplata (
     Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-    Cenovnik_id INT NOT NULL REFERENCES Cenovnik (Id),
-    Obuka_id INT NOT NULL REFERENCES Obuka (Id),
+    Cenovnik_id INT NOT NULL CONSTRAINT FK_Uplata_Cenovnik_Id REFERENCES Cenovnik (Id),
+    Obuka_id INT NOT NULL CONSTRAINT FK_Uplata_Obuka_Id REFERENCES Obuka (Id),
     Iznos DECIMAL(10,2) NOT NULL,
     Datum DATE NOT NULL
         CONSTRAINT DF_Uplata_Datum DEFAULT (getdate()),

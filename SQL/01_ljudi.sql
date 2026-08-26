@@ -91,7 +91,7 @@ GO
 
 CREATE TABLE Zaposleni_Izostanak (
     Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-    Zaposleni_id INT NOT NULL REFERENCES Zaposleni (Id),
+    Zaposleni_id INT NOT NULL CONSTRAINT FK_Zaposleni_Izostanak_Id REFERENCES Zaposleni (Id),
     Tip NVARCHAR(20) NOT NULL,
     Datum_od DATE NOT NULL,
     Datum_do DATE,
@@ -117,8 +117,8 @@ CREATE TABLE Funkcije_Zaposlenih (
 GO
 
 CREATE TABLE Zaposleni_Funkcija (
-    Id_zaposlenog INT NOT NULL REFERENCES Zaposleni (Id),
-    Id_funkcije INT NOT NULL REFERENCES Funkcije_Zaposlenih (Id),
+    Id_zaposlenog INT NOT NULL CONSTRAINT FK_Zaposleni_Funkcija_Id_zaposlenog REFERENCES Zaposleni (Id),
+    Id_funkcije INT NOT NULL CONSTRAINT FK_Zaposleni_Funkcija_Id_funkcije REFERENCES Funkcije_Zaposlenih (Id),
     CONSTRAINT PK_Zaposleni_Funkcija PRIMARY KEY (Id_zaposlenog, Id_funkcije)
 );
 GO
