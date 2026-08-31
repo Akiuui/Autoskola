@@ -18,7 +18,8 @@ JOIN Zaposleni z ON z.Id = c.Instruktor_id
 WHERE v.Registracija = 'BG-101-AA'
   AND c.Datum BETWEEN '2026-06-01' AND '2026-07-31'
 ORDER BY c.Datum, c.Pocetak;
-CREATE INDEX IX_Cas_Instruktor_Datum_Pocetak ON Cas (Instruktor_id, Datum, Pocetak);
+CREATE INDEX IX_Cas_Instruktor_Datum_Pocetak ON Cas (Vozilo_id, Datum, Pocetak)
+INCLUDE (Kraj, Status, Lokacija, Instruktor_id);
 DROP INDEX IF EXISTS IX_Cas_Instruktor_Datum_Pocetak ON Cas;
 
 -- 2. Casovi po kandidatu
